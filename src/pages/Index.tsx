@@ -1,16 +1,184 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { hotels } from "@/data/hotels";
+import { Phone, Mail, Instagram, Menu, X, MapPin, ArrowRight } from "lucide-react";
+import ElevatorTransition from "@/components/ElevatorTransition";
+import { useElevatorNavigation } from "@/hooks/useElevatorNavigation";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const { isTransitioning, navigateWithElevator, handleTransitionComplete } = useElevatorNavigation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [introComplete, setIntroComplete] = useState(false);
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="min-h-screen bg-background text-foreground font-body">
+      {/* Elevator Transition */}
+      <ElevatorTransition isActive={isTransitioning} onComplete={handleTransitionComplete} />
+
+      {/* Intro Animation — white circle zoom */}
+      <AnimatePresence>
+        {!introComplete && (
+          <motion.div
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-background"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            onAnimationComplete={() => {}}
+          >
+            <motion.div
+              className="w-4 h-4 rounded-full bg-primary"
+              initial={{ scale: 0 }}
+              animate={{ scale: 80, opacity: 0 }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+              onAnimationComplete={() => setIntroComplete(true)}
+            />
+            <motion.span
+              className="absolute text-2xl tracking-[0.3em] uppercase font-display text-foreground"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1, 1, 0] }}
+              transition={{ duration: 1.5, times: [0, 0.2, 0.7, 1] }}
+            >
+              EVARACo.
+            </motion.span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 glass-nav">
+        <div className="max-w-7xl mx-auto px-5 md:px-12 flex items-center justify-between h-16">
+          <span className="text-lg tracking-[0.2em] uppercase font-display text-foreground font-semibold">
+            EVARACo.
+          </span>
+          <div className="hidden md:flex items-center gap-8">
+            <a href="tel:+919876543210" className="text-xs tracking-wider text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
+              <Phone className="w-3 h-3" /> Contact
+            </a>
+            <a href="mailto:info@evaraco.com" className="text-xs tracking-wider text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
+              <Mail className="w-3 h-3" /> Email
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-xs tracking-wider text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
+              <Instagram className="w-3 h-3" /> Follow
+            </a>
+          </div>
+          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-foreground">
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="md:hidden border-t border-border bg-background overflow-hidden"
+            >
+              <div className="px-5 py-4 flex flex-col gap-3">
+                <a href="tel:+919876543210" className="text-xs tracking-wider text-muted-foreground font-body flex items-center gap-1.5">
+                  <Phone className="w-3 h-3" /> Contact
+                </a>
+                <a href="mailto:info@evaraco.com" className="text-xs tracking-wider text-muted-foreground font-body flex items-center gap-1.5">
+                  <Mail className="w-3 h-3" /> Email
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-xs tracking-wider text-muted-foreground font-body flex items-center gap-1.5">
+                  <Instagram className="w-3 h-3" /> Follow
+                </a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
+
+      {/* Main Content — 3 Hotel Cards */}
+      <main className="pt-24 pb-16 section-padding">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <span className="text-[10px] tracking-[0.4em] uppercase text-primary font-body">Discover</span>
+          <h2 className="text-3xl md:text-5xl font-display mt-2 text-foreground">Our Properties</h2>
+          <div className="gold-divider mt-4" />
+        </div>
+
+        {/* Hotel Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {hotels.map((hotel, index) => (
+            <motion.div
+              key={hotel.id}
+              className="cursor-pointer group"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.15 }}
+              onClick={() => navigateWithElevator(`/hotel/${hotel.id}`)}
+            >
+              {/* Image */}
+              <div className="relative overflow-hidden aspect-[3/4]">
+                <img
+                  src={hotel.cardImage}
+                  alt={hotel.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+
+              {/* Info below image */}
+              <div className="pt-4 pb-2">
+                <h3 className="text-xl font-display text-foreground">{hotel.name}</h3>
+                <p className="text-[11px] text-muted-foreground font-body mt-1 flex items-start gap-1">
+                  <MapPin className="w-3 h-3 mt-0.5 shrink-0 text-primary" />
+                  {hotel.address}
+                </p>
+                <span className="text-[10px] tracking-[0.2em] uppercase text-primary font-body mt-2 inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+                  {hotel.city}
+                  <ArrowRight className="w-3 h-3" />
+                </span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </main>
+
+      {/* Newsletter / Subscribe Section */}
+      <section className="section-padding bg-secondary">
+        <div className="max-w-2xl mx-auto text-center">
+          <span className="text-[10px] tracking-[0.4em] uppercase text-primary font-body">Stay Connected</span>
+          <h3 className="text-2xl md:text-3xl font-display mt-2 text-foreground">Exclusive Privileges Await</h3>
+          <p className="text-sm text-muted-foreground font-body mt-4 max-w-md mx-auto">
+            Subscribe to receive curated offers, seasonal packages, and early access to our newest properties.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <input
+              type="email"
+              placeholder="Your email address"
+              className="flex-1 px-4 py-3 text-sm font-body bg-background border border-border focus:border-primary focus:outline-none transition-colors"
+            />
+            <button className="px-8 py-3 bg-primary text-primary-foreground text-[10px] tracking-[0.3em] uppercase font-body hover:bg-gold-dark transition-colors">
+              Subscribe
+            </button>
+          </div>
+          <p className="text-[10px] text-muted-foreground font-body mt-3">
+            No spam. Unsubscribe anytime.
+          </p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="section-padding bg-foreground text-background">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+          <span className="text-sm tracking-[0.2em] uppercase font-display">EVARACo.</span>
+          <p className="text-[11px] text-background/50 font-body">© 2025 EVARACo. All rights reserved.</p>
+          <div className="flex gap-4">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-background/50 hover:text-background transition-colors">
+              <Instagram className="w-4 h-4" />
+            </a>
+            <a href="mailto:info@evaraco.com" className="text-background/50 hover:text-background transition-colors">
+              <Mail className="w-4 h-4" />
+            </a>
+            <a href="tel:+919876543210" className="text-background/50 hover:text-background transition-colors">
+              <Phone className="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
