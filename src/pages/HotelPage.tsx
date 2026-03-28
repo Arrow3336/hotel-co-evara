@@ -176,7 +176,7 @@ const HotelPage = () => {
         </div>
       </section>
 
-      {/* Rooms & Pricing — Redesigned */}
+      {/* Rooms & Pricing — Premium Redesign */}
       <section id="rooms" className="section-padding bg-secondary">
         <div className="text-center mb-14">
           <span className="text-[10px] tracking-[0.4em] uppercase text-primary font-body">Accommodations</span>
@@ -186,75 +186,77 @@ const HotelPage = () => {
             Each room is thoughtfully designed to offer an exceptional blend of comfort, elegance, and modern amenities.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
           {hotel.rooms.map((room, i) => (
             <motion.div
               key={i}
-              className="group relative bg-card rounded-2xl overflow-hidden border border-border/60 hover:border-primary/30 transition-all duration-500"
+              className="group relative bg-card rounded-3xl overflow-hidden border border-border/40 transition-all duration-500"
               style={{
-                boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)",
               }}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.12 }}
+              transition={{ duration: 0.7, delay: i * 0.15, ease: [0.25, 0.1, 0.25, 1] }}
               whileHover={{
-                y: -6,
-                boxShadow: "0 12px 40px rgba(0,0,0,0.1), 0 4px 16px hsl(38 70% 45% / 0.08)",
+                y: -8,
+                boxShadow: "0 20px 50px rgba(0,0,0,0.12), 0 8px 24px hsl(38 70% 45% / 0.1)",
               }}
             >
-              {/* Image with rounded top */}
-              <div className="relative overflow-hidden rounded-t-2xl">
+              {/* Image container with inner rounded corners */}
+              <div className="relative overflow-hidden m-3 rounded-2xl">
                 <img
                   src={room.image}
                   alt={room.name}
-                  className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  className="w-full aspect-[4/3] object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
                   loading="lazy"
                 />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent" />
-                {/* Price badge */}
+                {/* Cinematic gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-foreground/5 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
+                
+                {/* Price badge — frosted glass */}
                 <div
-                  className="absolute top-4 right-4 rounded-full px-4 py-1.5 backdrop-blur-md"
+                  className="absolute top-3 right-3 rounded-2xl px-4 py-2 backdrop-blur-xl border border-border/20"
                   style={{
-                    background: "rgba(255,255,255,0.9)",
-                    boxShadow: "0 2px 12px rgba(0,0,0,0.1)",
+                    background: "rgba(255,255,255,0.85)",
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
                   }}
                 >
-                  <span className="text-sm font-display font-semibold text-foreground">{room.price}</span>
-                  <span className="text-[10px] text-muted-foreground font-body ml-0.5">/night</span>
+                  <span className="text-base font-display font-bold text-foreground">{room.price}</span>
+                  <span className="text-[9px] text-muted-foreground font-body ml-1 uppercase tracking-wider">/night</span>
+                </div>
+
+                {/* Room name overlay at bottom of image */}
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-xl md:text-2xl font-display text-background drop-shadow-lg tracking-wide">{room.name}</h3>
                 </div>
               </div>
 
               {/* Content area */}
-              <div className="p-6">
-                <h3 className="text-xl md:text-2xl font-display text-foreground tracking-wide">{room.name}</h3>
-                <div className="gold-divider-left mt-2 mb-3" />
-                <p className="text-[13px] text-muted-foreground font-body leading-relaxed">{room.description}</p>
+              <div className="px-5 pb-6 pt-3">
+                <p className="text-[13px] text-muted-foreground font-body leading-relaxed line-clamp-3">{room.description}</p>
 
-                {/* Features as pills with rounded edges */}
-                <div className="flex flex-wrap gap-2 mt-5">
+                {/* Features as elegant pills */}
+                <div className="flex flex-wrap gap-1.5 mt-4">
                   {room.features.map((f) => (
                     <span
                       key={f}
-                      className="text-[10px] px-3 py-1.5 rounded-full bg-secondary border border-border/50 text-muted-foreground font-body tracking-wide"
+                      className="text-[9px] px-3 py-1 rounded-full bg-primary/5 border border-primary/15 text-primary font-body tracking-widest uppercase"
                     >
                       {f}
                     </span>
                   ))}
                 </div>
 
-                {/* Book Now button — refined with rounded pill shape */}
+                {/* Book Now button — premium pill */}
                 <button
-                  className="mt-6 w-full py-3 rounded-xl bg-foreground text-background text-[11px] tracking-[0.25em] uppercase font-body font-medium 
-                  hover:bg-primary hover:text-primary-foreground transition-all duration-400 
-                  active:scale-[0.98] 
-                  group-hover:shadow-lg"
-                  style={{
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                  }}
+                  className="mt-5 w-full py-3.5 rounded-2xl bg-foreground text-background text-[11px] tracking-[0.3em] uppercase font-display font-semibold
+                  hover:bg-primary hover:text-primary-foreground transition-all duration-500
+                  active:scale-[0.97]
+                  group-hover:shadow-xl relative overflow-hidden"
                 >
-                  Book Now
+                  <span className="relative z-10">Reserve Now</span>
+                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary transition-all duration-500 rounded-2xl" />
                 </button>
               </div>
             </motion.div>
