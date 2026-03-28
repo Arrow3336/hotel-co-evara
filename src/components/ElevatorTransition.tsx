@@ -205,32 +205,28 @@ const ElevatorTransition = ({ isActive, onComplete }: ElevatorTransitionProps) =
     playElevatorSound("close");
 
     setTimeout(() => {
-      // Phase 2: Doors fully closed
       setPhase("closed");
 
       setTimeout(() => {
-        // Phase 3: Motor hum (elevator moving)
         setPhase("motor");
         playElevatorSound("motor");
 
         setTimeout(() => {
-          // Phase 4: Ding — arrived
           setPhase("ding");
           playElevatorSound("ding");
 
           setTimeout(() => {
-            // Phase 5: Doors open slowly
             setPhase("opening");
             playElevatorSound("open");
 
             setTimeout(() => {
               setPhase("done");
               onComplete();
-            }, 1300);
-          }, 800);
-        }, 1200);
-      }, 300);
-    }, 1500);
+            }, 900);
+          }, 500);
+        }, 800);
+      }, 200);
+    }, 1000);
   }, [onComplete]);
 
   useEffect(() => {
@@ -267,22 +263,21 @@ const ElevatorTransition = ({ isActive, onComplete }: ElevatorTransitionProps) =
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
         >
-          {/* Dark background behind doors */}
-          <div className="absolute inset-0" style={{ background: "#0a0a0a" }} />
+          {/* Transparent background — no black screen */}
+          <div className="absolute inset-0" style={{ background: "transparent" }} />
 
           {/* Left door — uses uploaded image */}
           <motion.div
             className="absolute top-0 left-0 w-1/2 h-full overflow-hidden"
             initial={{ x: "-100%" }}
             animate={{ x: leftX }}
-            transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 1.0, ease: [0.25, 0.1, 0.25, 1] }}
             style={{ willChange: "transform" }}
           >
             <img
               src={doorLeftImg}
               alt=""
               className="w-full h-full object-cover"
-              style={{ transform: "scaleX(1)" }}
             />
             {/* Metallic edge highlight */}
             <div
@@ -303,14 +298,13 @@ const ElevatorTransition = ({ isActive, onComplete }: ElevatorTransitionProps) =
             className="absolute top-0 right-0 w-1/2 h-full overflow-hidden"
             initial={{ x: "100%" }}
             animate={{ x: rightX }}
-            transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 1.0, ease: [0.25, 0.1, 0.25, 1] }}
             style={{ willChange: "transform" }}
           >
             <img
               src={doorRightImg}
               alt=""
               className="w-full h-full object-cover"
-              style={{ transform: "scaleX(1)" }}
             />
             {/* Metallic edge highlight */}
             <div
