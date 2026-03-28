@@ -247,13 +247,14 @@ const ElevatorTransition = ({ isActive, onComplete }: ElevatorTransitionProps) =
 
   if (!isActive && phase === "idle") return null;
 
-  const isClosed = phase === "closed" || phase === "motor" || phase === "ding";
+  const closedPhases = ["closed", "motor", "ding"] as const;
+  const isClosed = (closedPhases as readonly string[]).includes(phase);
   const isOpening = phase === "opening";
 
   const leftX = phase === "closing" ? "0%" : isClosed ? "0%" : isOpening ? "-100%" : "-100%";
   const rightX = phase === "closing" ? "0%" : isClosed ? "0%" : isOpening ? "100%" : "100%";
 
-  const showFloorIndicator = isClosed || phase === "ding";
+  const showFloorIndicator = isClosed;
   const showCenterGlow = phase === "ding";
   const isMotorPhase = phase === "motor";
 
