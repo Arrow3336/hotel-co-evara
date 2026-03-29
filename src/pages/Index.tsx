@@ -4,6 +4,7 @@ import { hotels } from "@/data/hotels";
 import { Phone, Mail, Instagram, Menu, X, MapPin, ArrowRight, Star, ChevronDown } from "lucide-react";
 import ElevatorTransition from "@/components/ElevatorTransition";
 import { useElevatorNavigation } from "@/hooks/useElevatorNavigation";
+import heroBg from "@/assets/hero-bg.jpg";
 
 const Index = () => {
   const { isTransitioning, navigateWithElevator, handleTransitionComplete } = useElevatorNavigation();
@@ -119,50 +120,71 @@ const Index = () => {
         </AnimatePresence>
       </motion.nav>
 
-      {/* Hero Section */}
+      {/* Hero Section with Background Image */}
       <motion.section
-        className="relative pt-28 pb-8 md:pt-36 md:pb-12 section-padding text-center"
+        className="relative min-h-[85vh] md:min-h-screen flex items-center justify-center overflow-hidden"
         initial={{ opacity: 0 }}
         animate={introComplete ? { opacity: 1 } : {}}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <img
+            src={heroBg}
+            alt=""
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-foreground/60 via-foreground/40 to-foreground/70" />
+        </div>
+
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          className="relative z-10 text-center px-5"
+          initial={{ opacity: 0, y: 30 }}
           animate={introComplete ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          transition={{ duration: 1, delay: 0.4 }}
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="gold-divider-left" />
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-12 h-px bg-primary/60" />
             <span className="text-[10px] tracking-[0.5em] uppercase text-primary font-body">Luxury Hospitality</span>
-            <div className="gold-divider-left" style={{ transform: "scaleX(-1)" }} />
+            <div className="w-12 h-px bg-primary/60" />
           </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-display text-foreground font-light leading-[1.1]">
+          <h1 className="text-4xl md:text-6xl lg:text-8xl font-display text-background font-light leading-[1.05]">
             Experience
-            <span className="block text-gold-gradient font-medium italic mt-1">Timeless Elegance</span>
+            <span className="block text-gold-gradient font-medium italic mt-2">Timeless Elegance</span>
           </h1>
-          <p className="text-sm md:text-base text-muted-foreground font-body mt-6 max-w-lg mx-auto leading-relaxed">
+          <p className="text-sm md:text-base text-background/70 font-body mt-6 md:mt-8 max-w-lg mx-auto leading-relaxed">
             Discover our collection of distinguished properties — where every detail is crafted for an extraordinary stay.
           </p>
+          <motion.a
+            href="#properties"
+            className="mt-8 inline-flex items-center gap-2 px-8 py-3 border border-primary/50 text-primary text-[10px] tracking-[0.3em] uppercase font-body rounded-full hover:bg-primary/10 hover:border-primary transition-all duration-500"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            Explore Properties
+            <ArrowRight className="w-3 h-3" />
+          </motion.a>
         </motion.div>
 
         {/* Scroll hint */}
         <motion.div
-          className="mt-10 flex flex-col items-center gap-1 text-muted-foreground/50"
-          animate={{ y: [0, 6, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-background/40"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
         >
-          <span className="text-[9px] tracking-[0.3em] uppercase">Explore</span>
+          <span className="text-[9px] tracking-[0.3em] uppercase">Scroll</span>
           <ChevronDown className="w-4 h-4" />
         </motion.div>
       </motion.section>
 
       {/* Properties Section */}
-      <main className="pb-20 section-padding">
+      <main id="properties" className="pb-20 section-padding">
         <motion.div
           className="text-center mb-14"
           initial={{ opacity: 0, y: 20 }}
-          animate={introComplete ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.4 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
         >
           <span className="text-[10px] tracking-[0.4em] uppercase text-primary font-body">Portfolio</span>
           <h2 className="text-3xl md:text-4xl font-display mt-2 text-foreground font-light">Our Properties</h2>
@@ -170,10 +192,11 @@ const Index = () => {
         </motion.div>
 
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto"
           variants={stagger}
           initial="hidden"
-          animate={introComplete ? "show" : "hidden"}
+          whileInView="show"
+          viewport={{ once: true }}
         >
           {hotels.map((hotel) => (
             <motion.div
@@ -184,9 +207,7 @@ const Index = () => {
               transition={{ duration: 0.3 }}
               onClick={() => navigateWithElevator(`/hotel/${hotel.id}`)}
             >
-              {/* Card */}
               <div className="relative overflow-hidden rounded-2xl bg-card border border-border hover-gold-border luxury-shadow">
-                {/* Image container */}
                 <div className="relative overflow-hidden aspect-[3/4]">
                   <img
                     src={hotel.cardImage}
@@ -194,16 +215,13 @@ const Index = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out gpu-accelerated"
                     loading="lazy"
                   />
-                  {/* Gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/10 to-transparent" />
 
-                  {/* Rating badge */}
                   <div className="absolute top-4 right-4 flex items-center gap-1 px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md border border-border/50">
                     <Star className="w-3 h-3 text-primary fill-primary" />
                     <span className="text-[10px] font-body font-semibold text-foreground">{hotel.rating}.0</span>
                   </div>
 
-                  {/* Bottom info overlay */}
                   <div className="absolute bottom-0 left-0 right-0 p-5">
                     <h3 className="text-xl font-display text-background font-medium">{hotel.name}</h3>
                     <p className="text-[11px] text-background/70 font-body mt-1 flex items-start gap-1">
@@ -213,7 +231,6 @@ const Index = () => {
                   </div>
                 </div>
 
-                {/* Bottom bar */}
                 <div className="px-5 py-3.5 flex items-center justify-between">
                   <span className="text-xs text-muted-foreground font-body italic">{hotel.tagline}</span>
                   <span className="text-[10px] tracking-[0.2em] uppercase text-primary font-body inline-flex items-center gap-1 group-hover:gap-2 transition-all duration-300 font-medium">
@@ -228,7 +245,6 @@ const Index = () => {
 
       {/* Subscribe Section */}
       <section className="section-padding bg-secondary relative overflow-hidden">
-        {/* Decorative element */}
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-[0.03]" style={{ background: "radial-gradient(circle, hsl(var(--primary)), transparent)" }} />
 
         <motion.div
