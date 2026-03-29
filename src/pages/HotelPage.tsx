@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { hotels } from "@/data/hotels";
-import { ArrowLeft, Star, MapPin, Menu, X, Waves, Sparkles, UtensilsCrossed, TreePalm, Dumbbell, Wine, Car, Phone, Wifi, ArrowRight, Mail, Instagram, Coffee, Gamepad2, ParkingCircle, Droplets, Scissors } from "lucide-react";
+import { ArrowLeft, Star, MapPin, Menu, X, Waves, Sparkles, UtensilsCrossed, TreePalm, Dumbbell, Wine, Car, Phone, Wifi, ArrowRight, Mail, Instagram, Coffee, Gamepad2, ParkingCircle, Droplets, Scissors, Bed, Users, Maximize } from "lucide-react";
 import constructionImg from "@/assets/construction-coming-soon.png";
 import ElevatorTransition from "@/components/ElevatorTransition";
 import { useElevatorNavigation } from "@/hooks/useElevatorNavigation";
@@ -63,7 +63,7 @@ const HotelPage = () => {
         <p className="text-muted-foreground font-body mt-3 text-lg tracking-wider">Opening Soon……….. </p>
         <button
           onClick={() => navigate("/")}
-          className="mt-10 group inline-flex items-center gap-3 border border-primary/30 text-primary px-8 py-3 text-[10px] tracking-[0.3em] uppercase font-body hover:bg-primary/5 hover:border-primary/60 transition-all duration-500"
+          className="mt-10 group inline-flex items-center gap-3 border border-primary/30 text-primary px-8 py-3 text-[10px] tracking-[0.3em] uppercase font-body hover:bg-primary/5 hover:border-primary/60 transition-all duration-500 rounded-full"
         >
           Back to Home
           <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
@@ -74,7 +74,6 @@ const HotelPage = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-body">
-      {/* Elevator Transition */}
       <ElevatorTransition isActive={isTransitioning} onComplete={handleTransitionComplete} />
 
       {/* Navigation */}
@@ -146,7 +145,7 @@ const HotelPage = () => {
         {hotel.highlights.map((highlight, i) => (
           <div key={i} className={`max-w-6xl mx-auto flex flex-col ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-16 items-center mb-16 last:mb-0`}>
             <div className="flex-1">
-              <img src={highlight.image} alt={highlight.title} className="w-full aspect-[4/3] object-cover" />
+              <img src={highlight.image} alt={highlight.title} className="w-full aspect-[4/3] object-cover rounded-2xl" />
             </div>
             <div className="flex-1">
               <span className="text-[10px] tracking-[0.4em] uppercase text-primary font-body">Experience</span>
@@ -171,93 +170,95 @@ const HotelPage = () => {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-6xl mx-auto">
           {hotel.gallery.map((img, i) => (
-            <img key={i} src={img} alt={`${hotel.name} gallery ${i + 1}`} className="w-full aspect-square object-cover hover:scale-[1.02] transition-transform duration-500" />
+            <img key={i} src={img} alt={`${hotel.name} gallery ${i + 1}`} className="w-full aspect-square object-cover rounded-xl hover:scale-[1.02] transition-transform duration-500" loading="lazy" />
           ))}
         </div>
       </section>
 
-      {/* Rooms & Pricing — Premium Redesign */}
+      {/* Rooms & Suites — Premium Redesign */}
       <section id="rooms" className="section-padding bg-secondary">
-        <div className="text-center mb-14">
+        <div className="text-center mb-16">
           <span className="text-[10px] tracking-[0.4em] uppercase text-primary font-body">Accommodations</span>
-          <h2 className="text-3xl md:text-4xl font-display mt-2 text-foreground">Rooms & Suites</h2>
-          <div className="gold-divider mt-4" />
-          <p className="text-sm text-muted-foreground font-body mt-4 max-w-lg mx-auto leading-relaxed">
+          <h2 className="text-3xl md:text-5xl font-display mt-3 text-foreground font-light">Rooms & Suites</h2>
+          <div className="gold-divider mt-5" />
+          <p className="text-sm text-muted-foreground font-body mt-5 max-w-lg mx-auto leading-relaxed">
             Each room is thoughtfully designed to offer an exceptional blend of comfort, elegance, and modern amenities.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {hotel.rooms.map((room, i) => (
             <motion.div
               key={i}
-              className="group relative bg-card rounded-3xl overflow-hidden border border-border/40 transition-all duration-500"
+              className="group relative bg-card rounded-[2rem] overflow-hidden border border-border/30 transition-all duration-500"
               style={{
-                boxShadow: "0 8px 32px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.04)",
               }}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: i * 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+              transition={{ duration: 0.7, delay: i * 0.12, ease: [0.25, 0.1, 0.25, 1] }}
               whileHover={{
-                y: -8,
-                boxShadow: "0 20px 50px rgba(0,0,0,0.12), 0 8px 24px hsl(38 70% 45% / 0.1)",
+                y: -6,
+                boxShadow: "0 16px 48px rgba(0,0,0,0.1), 0 4px 16px hsl(38 70% 45% / 0.08)",
               }}
             >
-              {/* Image container with inner rounded corners */}
-              <div className="relative overflow-hidden m-3 rounded-2xl">
+              {/* Image with inner rounded padding */}
+              <div className="relative overflow-hidden m-3 rounded-[1.5rem]">
                 <img
                   src={room.image}
                   alt={room.name}
-                  className="w-full aspect-[4/3] object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
+                  className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   loading="lazy"
                 />
-                {/* Cinematic gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-foreground/5 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
-                
-                {/* Price badge — frosted glass */}
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-transparent to-transparent" />
+
+                {/* Price badge */}
                 <div
-                  className="absolute top-3 right-3 rounded-2xl px-4 py-2 backdrop-blur-xl border border-border/20"
+                  className="absolute top-4 right-4 rounded-2xl px-4 py-2 backdrop-blur-xl border border-background/20"
                   style={{
-                    background: "rgba(255,255,255,0.85)",
-                    boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+                    background: "hsl(var(--background) / 0.88)",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
                   }}
                 >
-                  <span className="text-base font-display font-bold text-foreground">{room.price}</span>
-                  <span className="text-[9px] text-muted-foreground font-body ml-1 uppercase tracking-wider">/night</span>
+                  <span className="text-lg font-display font-bold text-foreground leading-none">{room.price}</span>
+                  <span className="text-[8px] text-muted-foreground font-body ml-1 uppercase tracking-widest">/night</span>
                 </div>
 
-                {/* Room name overlay at bottom of image */}
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="text-xl md:text-2xl font-display text-background drop-shadow-lg tracking-wide">{room.name}</h3>
+                {/* Room name on image */}
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <h3 className="text-lg md:text-xl font-display text-background font-medium drop-shadow-lg">{room.name}</h3>
                 </div>
               </div>
 
-              {/* Content area */}
-              <div className="px-5 pb-6 pt-3">
-                <p className="text-[13px] text-muted-foreground font-body leading-relaxed line-clamp-3">{room.description}</p>
+              {/* Content */}
+              <div className="px-5 pb-6 pt-2">
+                <p className="text-[13px] text-muted-foreground font-body leading-relaxed line-clamp-2">{room.description}</p>
 
-                {/* Features as elegant pills */}
+                {/* Feature pills */}
                 <div className="flex flex-wrap gap-1.5 mt-4">
-                  {room.features.map((f) => (
+                  {room.features.slice(0, 4).map((f) => (
                     <span
                       key={f}
-                      className="text-[9px] px-3 py-1 rounded-full bg-primary/5 border border-primary/15 text-primary font-body tracking-widest uppercase"
+                      className="text-[8px] px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary/80 font-body tracking-widest uppercase"
                     >
                       {f}
                     </span>
                   ))}
                 </div>
 
-                {/* Book Now button — premium pill */}
-                <button
-                  className="mt-5 w-full py-3.5 rounded-2xl bg-foreground text-background text-[11px] tracking-[0.3em] uppercase font-display font-semibold
-                  hover:bg-primary hover:text-primary-foreground transition-all duration-500
-                  active:scale-[0.97]
-                  group-hover:shadow-xl relative overflow-hidden"
+                {/* Reserve button */}
+                <motion.button
+                  className="mt-5 w-full py-3.5 rounded-2xl text-[11px] tracking-[0.25em] uppercase font-display font-semibold
+                  border-2 border-foreground/10 text-foreground
+                  hover:bg-primary hover:text-primary-foreground hover:border-primary
+                  transition-all duration-500 active:scale-[0.97]"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.97 }}
                 >
-                  <span className="relative z-10">Reserve Now</span>
-                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary transition-all duration-500 rounded-2xl" />
-                </button>
+                  Reserve Now
+                </motion.button>
               </div>
             </motion.div>
           ))}
@@ -273,7 +274,7 @@ const HotelPage = () => {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
           {hotel.amenities.map((amenity, i) => (
-            <div key={i} className="flex flex-col items-center gap-2 p-4 glass-card hover-gold-border text-center">
+            <div key={i} className="flex flex-col items-center gap-2 p-4 glass-card rounded-xl hover-gold-border text-center transition-all duration-300">
               <div className="text-primary">
                 {amenityIcons[amenity] || <Wifi className="w-5 h-5" />}
               </div>
@@ -291,7 +292,7 @@ const HotelPage = () => {
         <p className="text-background/60 font-body max-w-md mx-auto">
           Reserve your stay and discover a world of unparalleled luxury and personalized service.
         </p>
-        <button className="mt-8 px-10 py-3 bg-primary text-primary-foreground text-[10px] tracking-[0.3em] uppercase font-body hover:bg-gold-dark transition-colors">
+        <button className="mt-8 px-10 py-3 bg-primary text-primary-foreground text-[10px] tracking-[0.3em] uppercase font-body rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all duration-300">
           Reserve Your Stay
         </button>
       </section>
