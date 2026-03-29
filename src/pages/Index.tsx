@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { hotels } from "@/data/hotels";
-import { Phone, Mail, Instagram, Menu, X, MapPin, ArrowRight, Star, Hotel } from "lucide-react";
+import { Phone, Mail, Instagram, Menu, X, MapPin, ArrowRight, Star } from "lucide-react";
 import ElevatorTransition from "@/components/ElevatorTransition";
 import { useElevatorNavigation } from "@/hooks/useElevatorNavigation";
 
@@ -12,12 +13,12 @@ const Index = () => {
 
   const stagger = {
     hidden: {},
-    show: { transition: { staggerChildren: 0.18, delayChildren: 0.2 } },
+    show: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
   } as const;
 
   const fadeUp = {
-    hidden: { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" as const } },
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" as const } },
   };
 
   return (
@@ -30,70 +31,68 @@ const Index = () => {
           <motion.div
             className="fixed inset-0 z-[9999] flex items-center justify-center bg-background"
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
           >
-            <motion.div className="flex flex-col items-center gap-3 z-10">
+            <motion.div className="flex flex-col items-center gap-2 z-10">
               <motion.span
-                className="text-3xl md:text-5xl tracking-[0.5em] uppercase font-display text-foreground font-light"
-                initial={{ opacity: 0, y: 10, letterSpacing: "0.8em" }}
+                className="text-2xl md:text-4xl tracking-[0.4em] uppercase font-display text-foreground font-medium"
+                initial={{ opacity: 0, y: 8, letterSpacing: "0.6em" }}
                 animate={{
                   opacity: [0, 1, 1, 0],
-                  y: [10, 0, 0, -5],
-                  letterSpacing: ["0.8em", "0.5em", "0.5em", "0.5em"],
+                  y: [8, 0, 0, -4],
+                  letterSpacing: ["0.6em", "0.4em", "0.4em", "0.4em"],
                 }}
-                transition={{ duration: 2, times: [0, 0.25, 0.75, 1], ease: "easeInOut" }}
+                transition={{ duration: 1.8, times: [0, 0.25, 0.75, 1], ease: "easeInOut" }}
                 onAnimationComplete={() => setIntroComplete(true)}
               >
-                EVARACo.
+                EVARA Co.
               </motion.span>
               <motion.div
                 className="gold-divider"
                 initial={{ scaleX: 0, opacity: 0 }}
                 animate={{ scaleX: [0, 1, 1, 0], opacity: [0, 1, 1, 0] }}
-                transition={{ duration: 2, times: [0, 0.3, 0.7, 1], ease: "easeInOut" }}
+                transition={{ duration: 1.8, times: [0, 0.3, 0.7, 1], ease: "easeInOut" }}
               />
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Navigation — Centered Logo with Hotel Icon */}
+      {/* Navigation */}
       <motion.nav
         className="fixed top-0 left-0 right-0 z-50 glass-nav"
-        initial={{ y: -80 }}
-        animate={introComplete ? { y: 0 } : { y: -80 }}
-        transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+        initial={{ y: -60 }}
+        animate={introComplete ? { y: 0 } : { y: -60 }}
+        transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
       >
-        <div className="max-w-7xl mx-auto px-5 md:px-12 flex items-center justify-between h-16">
-          {/* Left: Mobile menu / Desktop links */}
-          <div className="flex items-center gap-6">
+        <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-14">
+          <div className="flex items-center gap-5">
             <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-foreground p-1">
-              {menuOpen ? <X className="w-5 h-5" /> : <Hotel className="w-5 h-5 text-primary" />}
+              {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
-            <div className="hidden md:flex items-center gap-6">
-              <a href="tel:+919876543210" className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
+            <div className="hidden md:flex items-center gap-5">
+              <a href="tel:+919876543210" className="text-[10px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
                 <Phone className="w-3 h-3" /> Contact
               </a>
-              <a href="mailto:info@evaraco.com" className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
+              <a href="mailto:info@evaraco.com" className="text-[10px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
                 <Mail className="w-3 h-3" /> Email
               </a>
             </div>
           </div>
 
-          {/* Center: Logo */}
-          <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
-            <span className="text-lg tracking-[0.25em] uppercase font-display text-foreground font-semibold">
-              EVARACo.
+          {/* Center Logo — smaller */}
+          <div className="absolute left-1/2 -translate-x-1/2">
+            <span className="text-sm tracking-[0.2em] uppercase font-display text-foreground font-semibold">
+              EVARA Co.
             </span>
           </div>
 
-          {/* Right: Social */}
-          <div className="hidden md:flex items-center gap-6">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
+          <div className="hidden md:flex items-center gap-5">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[10px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
               <Instagram className="w-3 h-3" /> Follow
             </a>
           </div>
-          <div className="md:hidden w-5" /> {/* Spacer for mobile */}
+          <div className="md:hidden w-4" />
         </div>
 
         <AnimatePresence>
@@ -102,18 +101,18 @@ const Index = () => {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
               className="md:hidden border-t border-border bg-background overflow-hidden"
             >
-              <div className="px-5 py-4 flex flex-col gap-4">
+              <div className="px-5 py-3 flex flex-col gap-3">
                 <a href="tel:+919876543210" className="text-xs tracking-wider text-muted-foreground font-body flex items-center gap-2">
-                  <Phone className="w-3.5 h-3.5" /> Contact
+                  <Phone className="w-3 h-3" /> Contact
                 </a>
                 <a href="mailto:info@evaraco.com" className="text-xs tracking-wider text-muted-foreground font-body flex items-center gap-2">
-                  <Mail className="w-3.5 h-3.5" /> Email
+                  <Mail className="w-3 h-3" /> Email
                 </a>
                 <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-xs tracking-wider text-muted-foreground font-body flex items-center gap-2">
-                  <Instagram className="w-3.5 h-3.5" /> Follow
+                  <Instagram className="w-3 h-3" /> Follow
                 </a>
               </div>
             </motion.div>
@@ -121,27 +120,27 @@ const Index = () => {
         </AnimatePresence>
       </motion.nav>
 
-      {/* Properties Section — Full Page, No Borders */}
-      <main className="pt-24 pb-20 section-padding">
+      {/* Properties Section */}
+      <main className="pt-20 pb-16 section-padding">
         <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
+          className="text-center mb-14"
+          initial={{ opacity: 0, y: 16 }}
           animate={introComplete ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-10 h-px bg-primary/50" />
-            <span className="text-[10px] tracking-[0.5em] uppercase text-primary font-body">Portfolio</span>
-            <div className="w-10 h-px bg-primary/50" />
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="w-8 h-px bg-primary/40" />
+            <span className="text-[9px] tracking-[0.4em] uppercase text-primary font-body font-medium">Portfolio</span>
+            <div className="w-8 h-px bg-primary/40" />
           </div>
-          <h1 className="text-3xl md:text-5xl font-display text-foreground font-light">Our Properties</h1>
-          <p className="text-sm text-muted-foreground font-body mt-4 max-w-md mx-auto leading-relaxed">
-            Discover our collection of distinguished properties crafted for extraordinary experiences.
+          <h1 className="text-3xl md:text-5xl font-display text-foreground font-medium">Our Properties</h1>
+          <p className="text-sm text-muted-foreground font-body mt-3 max-w-md mx-auto leading-relaxed">
+            A curated collection of distinguished properties.
           </p>
         </motion.div>
 
         <motion.div
-          className="flex flex-col gap-20 max-w-6xl mx-auto"
+          className="flex flex-col gap-16 md:gap-24 max-w-6xl mx-auto"
           variants={stagger}
           initial="hidden"
           animate={introComplete ? "show" : "hidden"}
@@ -153,46 +152,45 @@ const Index = () => {
               className="cursor-pointer group"
               onClick={() => navigateWithElevator(`/hotel/${hotel.id}`)}
             >
-              <div className={`flex flex-col ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} gap-8 md:gap-14 items-center`}>
-                {/* Image — no border, no box */}
-                <div className="flex-1 w-full relative overflow-hidden rounded-3xl">
+              <div className={`flex flex-col ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} gap-6 md:gap-12 items-center`}>
+                {/* Image */}
+                <div className="flex-1 w-full overflow-hidden rounded-2xl">
                   <motion.div
-                    className="relative overflow-hidden rounded-3xl"
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+                    className="overflow-hidden rounded-2xl"
+                    whileHover={{ scale: 1.015 }}
+                    transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
                   >
                     <img
                       src={hotel.cardImage}
                       alt={hotel.name}
-                      className="w-full aspect-[4/3] object-cover rounded-3xl"
+                      className="w-full aspect-[4/3] object-cover"
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </motion.div>
                 </div>
 
                 {/* Details */}
-                <div className="flex-1 w-full flex flex-col justify-center py-4">
-                  <div className="flex items-center gap-2 mb-3">
+                <div className="flex-1 w-full flex flex-col justify-center py-2">
+                  <div className="flex items-center gap-1.5 mb-2">
                     {Array.from({ length: hotel.rating }).map((_, i) => (
-                      <Star key={i} className="w-3 h-3 text-primary fill-primary" />
+                      <Star key={i} className="w-2.5 h-2.5 text-primary fill-primary" />
                     ))}
                   </div>
-                  <span className="text-[10px] tracking-[0.3em] uppercase text-primary/70 font-body">{hotel.tagline}</span>
-                  <h2 className="text-2xl md:text-4xl font-display text-foreground font-light mt-1">{hotel.name}</h2>
-                  <div className="gold-divider-left mt-4 mb-5" />
+                  <span className="text-[9px] tracking-[0.25em] uppercase text-primary/60 font-body font-medium">{hotel.tagline}</span>
+                  <h2 className="text-xl md:text-3xl font-display text-foreground font-medium mt-1">{hotel.name}</h2>
+                  <div className="gold-divider-left mt-3 mb-4" />
                   <p className="text-sm text-muted-foreground font-body leading-relaxed line-clamp-3">
                     {hotel.description}
                   </p>
-                  <p className="text-[11px] text-muted-foreground/70 font-body mt-3 flex items-start gap-1">
-                    <MapPin className="w-3 h-3 mt-0.5 shrink-0 text-primary/60" />
+                  <p className="text-[10px] text-muted-foreground/60 font-body mt-2 flex items-start gap-1">
+                    <MapPin className="w-3 h-3 mt-0.5 shrink-0 text-primary/50" />
                     <span className="line-clamp-1">{hotel.address}</span>
                   </p>
                   <motion.span
-                    className="mt-6 inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-primary font-body font-medium group-hover:gap-3 transition-all duration-300 self-start"
-                    whileHover={{ x: 4 }}
+                    className="mt-5 inline-flex items-center gap-2 text-[9px] tracking-[0.25em] uppercase text-primary font-body font-semibold group-hover:gap-3 transition-all duration-300 self-start"
+                    whileHover={{ x: 3 }}
                   >
-                    Explore Property <ArrowRight className="w-3 h-3" />
+                    Explore <ArrowRight className="w-3 h-3" />
                   </motion.span>
                 </div>
               </div>
@@ -201,40 +199,38 @@ const Index = () => {
         </motion.div>
       </main>
 
-      {/* Footer — Professional */}
+      {/* Footer */}
       <footer className="border-t border-border">
-        <div className="max-w-6xl mx-auto px-5 md:px-12 py-12 md:py-16">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex flex-col items-center md:items-start gap-2">
-              <span className="text-xl tracking-[0.3em] uppercase font-display font-medium text-foreground">EVARACo.</span>
-              <span className="text-[10px] tracking-[0.2em] uppercase text-primary font-body">Luxury Hospitality</span>
+        <div className="max-w-6xl mx-auto px-5 md:px-10 py-10">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-col items-center md:items-start gap-1">
+              <span className="text-base tracking-[0.25em] uppercase font-display font-semibold text-foreground">EVARA Co.</span>
+              <span className="text-[9px] tracking-[0.15em] uppercase text-primary font-body">Luxury Hospitality</span>
             </div>
 
-            <div className="flex flex-col items-center gap-2">
-              <div className="flex gap-6">
-                {[
-                  { href: "https://instagram.com", icon: Instagram, external: true },
-                  { href: "mailto:info@evaraco.com", icon: Mail },
-                  { href: "tel:+919876543210", icon: Phone },
-                ].map((link, i) => (
-                  <a
-                    key={i}
-                    href={link.href}
-                    {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="w-9 h-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition-all duration-300"
-                  >
-                    <link.icon className="w-3.5 h-3.5" />
-                  </a>
-                ))}
-              </div>
+            <div className="flex gap-4">
+              {[
+                { href: "https://instagram.com", icon: Instagram, external: true },
+                { href: "mailto:info@evaraco.com", icon: Mail },
+                { href: "tel:+919876543210", icon: Phone },
+              ].map((link, i) => (
+                <a
+                  key={i}
+                  href={link.href}
+                  {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition-all duration-300"
+                >
+                  <link.icon className="w-3 h-3" />
+                </a>
+              ))}
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-3">
-            <p className="text-[10px] text-muted-foreground/60 font-body">© 2025 EVARACo. All rights reserved.</p>
-            <div className="flex gap-6">
-              <span className="text-[10px] text-muted-foreground/60 font-body">Privacy Policy</span>
-              <span className="text-[10px] text-muted-foreground/60 font-body">Terms of Service</span>
+          <div className="mt-6 pt-5 border-t border-border flex flex-col md:flex-row justify-between items-center gap-2">
+            <p className="text-[9px] text-muted-foreground/50 font-body">© 2025 EVARA Co. All rights reserved.</p>
+            <div className="flex gap-5">
+              <span className="text-[9px] text-muted-foreground/50 font-body">Privacy Policy</span>
+              <span className="text-[9px] text-muted-foreground/50 font-body">Terms of Service</span>
             </div>
           </div>
         </div>
