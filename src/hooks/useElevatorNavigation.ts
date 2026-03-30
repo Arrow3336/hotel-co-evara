@@ -11,18 +11,23 @@ export const useElevatorNavigation = () => {
     setIsTransitioning(true);
   }, []);
 
-  const handleTransitionComplete = useCallback(() => {
+  // Called when doors are fully closed — navigate now so page loads behind doors
+  const handleDoorsFullyClosed = useCallback(() => {
     if (pendingPath) {
       navigate(pendingPath);
       window.scrollTo(0, 0);
     }
+  }, [navigate, pendingPath]);
+
+  const handleTransitionComplete = useCallback(() => {
     setIsTransitioning(false);
     setPendingPath(null);
-  }, [navigate, pendingPath]);
+  }, []);
 
   return {
     isTransitioning,
     navigateWithElevator,
     handleTransitionComplete,
+    handleDoorsFullyClosed,
   };
 };
