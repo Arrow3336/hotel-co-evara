@@ -12,44 +12,60 @@ const playElevatorSound = (type: "close" | "ding" | "open") => {
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
 
     if (type === "close") {
-      // Mechanical rumble
+      // Smooth mechanical slide
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
-      osc.frequency.setValueAtTime(50, ctx.currentTime);
-      osc.frequency.linearRampToValueAtTime(28, ctx.currentTime + 1.4);
-      gain.gain.setValueAtTime(0.02, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.006, ctx.currentTime + 1.4);
+      osc.frequency.setValueAtTime(55, ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(30, ctx.currentTime + 1.8);
+      gain.gain.setValueAtTime(0.015, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.004, ctx.currentTime + 1.8);
       osc.connect(gain).connect(ctx.destination);
       osc.start();
-      osc.stop(ctx.currentTime + 1.4);
+      osc.stop(ctx.currentTime + 1.8);
+
+      // Soft pneumatic hiss
+      const bufferSize = ctx.sampleRate * 1.8;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.003;
+      }
+      const noise = ctx.createBufferSource();
+      const noiseGain = ctx.createGain();
+      noise.buffer = buffer;
+      noiseGain.gain.setValueAtTime(0.8, ctx.currentTime);
+      noiseGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.8);
+      noise.connect(noiseGain).connect(ctx.destination);
+      noise.start();
 
       // Soft thud when doors meet
       setTimeout(() => {
         const thud = ctx.createOscillator();
         const thudGain = ctx.createGain();
         thud.type = "sine";
-        thud.frequency.setValueAtTime(35, ctx.currentTime);
-        thudGain.gain.setValueAtTime(0.06, ctx.currentTime);
-        thudGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+        thud.frequency.setValueAtTime(40, ctx.currentTime);
+        thudGain.gain.setValueAtTime(0.05, ctx.currentTime);
+        thudGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
         thud.connect(thudGain).connect(ctx.destination);
         thud.start();
-        thud.stop(ctx.currentTime + 0.12);
-      }, 1300);
+        thud.stop(ctx.currentTime + 0.15);
+      }, 1700);
     }
 
     if (type === "ding") {
-      // Classic elevator ding — two harmonics
-      [1480, 2960].forEach((freq, i) => {
+      // Classic 2-tone elevator chime
+      [1318, 1760].forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "sine";
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(i === 0 ? 0.08 : 0.03, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.15);
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(i === 0 ? 0.07 : 0.04, ctx.currentTime + i * 0.15 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 1.4);
         osc.connect(gain).connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 1.2);
+        osc.start(ctx.currentTime + i * 0.15);
+        osc.stop(ctx.currentTime + i * 0.15 + 1.4);
       });
     }
 
@@ -57,13 +73,13 @@ const playElevatorSound = (type: "close" | "ding" | "open") => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
-      osc.frequency.setValueAtTime(28, ctx.currentTime);
-      osc.frequency.linearRampToValueAtTime(45, ctx.currentTime + 1.0);
-      gain.gain.setValueAtTime(0.012, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.003, ctx.currentTime + 1.0);
+      osc.frequency.setValueAtTime(30, ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(50, ctx.currentTime + 1.4);
+      gain.gain.setValueAtTime(0.01, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.002, ctx.currentTime + 1.4);
       osc.connect(gain).connect(ctx.destination);
       osc.start();
-      osc.stop(ctx.currentTime + 1.0);
+      osc.stop(ctx.currentTime + 1.4);
     }
   } catch (e) {
     // Audio not available
@@ -72,63 +88,61 @@ const playElevatorSound = (type: "close" | "ding" | "open") => {
 
 const ElevatorDoor = ({ side, phase }: { side: "left" | "right"; phase: string }) => {
   const text = side === "left" ? "Evara" : "Co.";
-  const isClosed = phase === "closed";
+  const isClosed = phase === "closed" || phase === "glow";
 
   return (
     <div
       className="w-full h-full relative gpu-accelerated overflow-hidden"
       style={{
-        background: "linear-gradient(180deg, #faf9f7 0%, #f3f1ee 30%, #edeae6 60%, #e8e5e0 100%)",
+        background: "linear-gradient(180deg, #f8f6f3 0%, #f0ede8 25%, #ebe8e3 50%, #e6e3dd 75%, #e2dfd9 100%)",
       }}
     >
-      {/* Brushed metal texture overlay */}
+      {/* Brushed steel texture */}
       <div
         className="absolute inset-0"
         style={{
-          background: `repeating-linear-gradient(
-            180deg,
-            transparent,
-            transparent 2px,
-            rgba(0,0,0,0.008) 2px,
-            rgba(0,0,0,0.008) 4px
-          )`,
+          background: `repeating-linear-gradient(180deg, transparent, transparent 1px, rgba(0,0,0,0.006) 1px, rgba(0,0,0,0.006) 3px)`,
         }}
       />
 
-      {/* Edge shadow */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            side === "left"
-              ? "linear-gradient(90deg, rgba(0,0,0,0.03) 0%, transparent 3%, transparent 96%, rgba(0,0,0,0.06) 100%)"
-              : "linear-gradient(90deg, rgba(0,0,0,0.06) 0%, transparent 4%, transparent 97%, rgba(0,0,0,0.03) 100%)",
-        }}
-      />
+      {/* Vertical panel groove lines */}
+      <div className="absolute inset-0" style={{
+        background: side === "left"
+          ? "linear-gradient(90deg, rgba(0,0,0,0.02) 0%, transparent 2%, transparent 48%, rgba(0,0,0,0.04) 49%, rgba(0,0,0,0.06) 50%)"
+          : "linear-gradient(90deg, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0.04) 51%, transparent 52%, transparent 98%, rgba(0,0,0,0.02) 100%)",
+      }} />
 
-      {/* Top decorative line */}
-      <div className="absolute top-[8%] left-[15%] right-[15%] h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(180,165,140,0.15), transparent)" }} />
-      
-      {/* Bottom decorative line */}
-      <div className="absolute bottom-[8%] left-[15%] right-[15%] h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(180,165,140,0.15), transparent)" }} />
+      {/* Horizontal decorative trim - top */}
+      <div className="absolute top-[6%] left-[12%] right-[12%] h-[0.5px]" style={{ background: "linear-gradient(90deg, transparent, rgba(190,175,150,0.2), transparent)" }} />
 
-      {/* Center text with animation */}
+      {/* Horizontal decorative trim - bottom */}
+      <div className="absolute bottom-[6%] left-[12%] right-[12%] h-[0.5px]" style={{ background: "linear-gradient(90deg, transparent, rgba(190,175,150,0.2), transparent)" }} />
+
+      {/* Center diamond accent */}
+      <div className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rotate-45 opacity-20" style={{ background: "rgba(180,160,130,0.5)" }} />
+
+      {/* Center text */}
       <div className="absolute inset-0 flex items-center justify-center">
         <motion.span
           className="select-none"
           style={{
             fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: "clamp(1.4rem, 4vw, 3rem)",
-            fontWeight: 400,
-            letterSpacing: "0.15em",
-            color: "#9a8e7e",
-            textShadow: "0 1px 2px rgba(255,255,255,0.8)",
+            fontSize: "clamp(1.6rem, 4.5vw, 3.2rem)",
+            fontWeight: 300,
+            letterSpacing: "0.18em",
+            color: "#a89880",
+            textShadow: "0 1px 3px rgba(255,255,255,0.9)",
           }}
           animate={isClosed ? {
-            opacity: [0.7, 1, 0.7],
-          } : {}}
+            opacity: [0.6, 1, 0.6],
+            textShadow: [
+              "0 1px 3px rgba(255,255,255,0.9)",
+              "0 0 20px rgba(180,160,130,0.3), 0 1px 3px rgba(255,255,255,0.9)",
+              "0 1px 3px rgba(255,255,255,0.9)",
+            ],
+          } : { opacity: 0.8 }}
           transition={isClosed ? {
-            duration: 2,
+            duration: 2.5,
             repeat: Infinity,
             ease: "easeInOut",
           } : {}}
@@ -138,45 +152,44 @@ const ElevatorDoor = ({ side, phase }: { side: "left" | "right"; phase: string }
       </div>
 
       {/* Subtle center reflection */}
-      <div className="absolute top-[20%] bottom-[20%] left-1/2 -translate-x-1/2 w-[60%]" style={{
-        background: "linear-gradient(180deg, transparent, rgba(255,255,255,0.04), transparent)",
-      }} />
-
-      {/* Bottom reflection gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-[30%]" style={{
-        background: "linear-gradient(180deg, transparent, rgba(255,255,255,0.05))"
+      <div className="absolute top-[15%] bottom-[15%] left-1/2 -translate-x-1/2 w-[50%]" style={{
+        background: "linear-gradient(180deg, transparent, rgba(255,255,255,0.03), transparent)",
       }} />
     </div>
   );
 };
 
 const ElevatorTransition = ({ isActive, onComplete, onDoorsFullyClosed }: ElevatorTransitionProps) => {
-  const [phase, setPhase] = useState<"idle" | "closing" | "closed" | "opening" | "done">("idle");
+  const [phase, setPhase] = useState<"idle" | "closing" | "closed" | "glow" | "opening" | "done">("idle");
 
   const runSequence = useCallback(() => {
     setPhase("closing");
     playElevatorSound("close");
 
-    // Doors close over 1.5s
+    // Doors close smoothly over 1.8s
     setTimeout(() => {
       setPhase("closed");
-      // Navigate immediately so page loads behind closed doors
+      // Navigate immediately — page loads behind closed doors
       onDoorsFullyClosed?.();
-      
-      // Wait for page to load, then ding and open
+
+      // Hold closed for 1s while page loads, then glow + ding
       setTimeout(() => {
+        setPhase("glow");
         playElevatorSound("ding");
+
+        // Glow for 0.8s, then open
         setTimeout(() => {
           setPhase("opening");
           playElevatorSound("open");
-          // Doors open over 1.2s
+
+          // Doors slide open over 1.6s
           setTimeout(() => {
             setPhase("done");
             onComplete();
-          }, 1200);
-        }, 600);
-      }, 800);
-    }, 1500);
+          }, 1600);
+        }, 800);
+      }, 1000);
+    }, 1800);
   }, [onComplete, onDoorsFullyClosed]);
 
   useEffect(() => {
@@ -193,13 +206,25 @@ const ElevatorTransition = ({ isActive, onComplete, onDoorsFullyClosed }: Elevat
 
   if (!isActive && phase === "idle") return null;
 
-  const isClosed = phase === "closed";
   const isClosing = phase === "closing";
+  const isClosed = phase === "closed" || phase === "glow";
   const isOpening = phase === "opening";
+  const isGlowing = phase === "glow";
 
-  const leftX = isClosing ? "0%" : isClosed ? "0%" : isOpening ? "-100%" : "-100%";
-  const rightX = isClosing ? "0%" : isClosed ? "0%" : isOpening ? "100%" : "100%";
-  const doorDuration = isOpening ? 1.2 : 1.5;
+  const getLeftX = () => {
+    if (isClosing) return "0%";
+    if (isClosed) return "0%";
+    if (isOpening) return "-100%";
+    return "-100%";
+  };
+  const getRightX = () => {
+    if (isClosing) return "0%";
+    if (isClosed) return "0%";
+    if (isOpening) return "100%";
+    return "100%";
+  };
+
+  const doorDuration = isClosing ? 1.8 : isOpening ? 1.6 : 0.3;
 
   return (
     <AnimatePresence>
@@ -208,15 +233,15 @@ const ElevatorTransition = ({ isActive, onComplete, onDoorsFullyClosed }: Elevat
           className="fixed inset-0 z-[9999]"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          style={{ background: "hsl(40 25% 97%)" }}
+          transition={{ duration: 0.15 }}
+          style={{ background: "transparent" }}
         >
           {/* Left door */}
           <motion.div
             className="absolute top-0 left-0 w-1/2 h-full gpu-accelerated"
             initial={{ x: "-100%" }}
-            animate={{ x: leftX }}
-            transition={{ duration: doorDuration, ease: [0.25, 0.1, 0.25, 1] }}
+            animate={{ x: getLeftX() }}
+            transition={{ duration: doorDuration, ease: [0.4, 0, 0.2, 1] }}
           >
             <ElevatorDoor side="left" phase={phase} />
           </motion.div>
@@ -225,18 +250,18 @@ const ElevatorTransition = ({ isActive, onComplete, onDoorsFullyClosed }: Elevat
           <motion.div
             className="absolute top-0 right-0 w-1/2 h-full gpu-accelerated"
             initial={{ x: "100%" }}
-            animate={{ x: rightX }}
-            transition={{ duration: doorDuration, ease: [0.25, 0.1, 0.25, 1] }}
+            animate={{ x: getRightX() }}
+            transition={{ duration: doorDuration, ease: [0.4, 0, 0.2, 1] }}
           >
             <ElevatorDoor side="right" phase={phase} />
           </motion.div>
 
-          {/* Center seam glow when closed */}
+          {/* Center seam line when closed */}
           {isClosed && (
             <motion.div
               className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full z-10"
               style={{
-                background: "linear-gradient(180deg, transparent 5%, rgba(180,165,140,0.3) 30%, rgba(180,165,140,0.5) 50%, rgba(180,165,140,0.3) 70%, transparent 95%)",
+                background: "linear-gradient(180deg, transparent 3%, rgba(180,165,140,0.25) 25%, rgba(180,165,140,0.4) 50%, rgba(180,165,140,0.25) 75%, transparent 97%)",
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -244,10 +269,38 @@ const ElevatorTransition = ({ isActive, onComplete, onDoorsFullyClosed }: Elevat
             />
           )}
 
-          {/* Floor indicator */}
+          {/* Golden glow effect when doors meet */}
+          {isGlowing && (
+            <motion.div
+              className="absolute inset-0 z-20 pointer-events-none"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1, 0.6] }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              {/* Horizontal light sweep */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[2px]" style={{
+                background: "linear-gradient(90deg, transparent 20%, rgba(200,180,140,0.5) 45%, rgba(220,200,160,0.8) 50%, rgba(200,180,140,0.5) 55%, transparent 80%)",
+                boxShadow: "0 0 60px 20px rgba(200,180,140,0.15)",
+              }} />
+              {/* Center glow burst */}
+              <motion.div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                style={{
+                  width: "120px",
+                  height: "120px",
+                  borderRadius: "50%",
+                  background: "radial-gradient(circle, rgba(200,180,140,0.2) 0%, transparent 70%)",
+                }}
+                animate={{ scale: [0.5, 1.5], opacity: [0.8, 0] }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              />
+            </motion.div>
+          )}
+
+          {/* Floor indicator arrow */}
           {isClosed && (
             <motion.div
-              className="absolute top-[6%] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1"
+              className="absolute top-[5%] left-1/2 -translate-x-1/2 z-20"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.2 }}
@@ -255,11 +308,11 @@ const ElevatorTransition = ({ isActive, onComplete, onDoorsFullyClosed }: Elevat
               <motion.span
                 style={{
                   fontFamily: "'Cormorant Garamond', Georgia, serif",
-                  fontSize: "clamp(0.6rem, 1.5vw, 0.9rem)",
+                  fontSize: "clamp(0.5rem, 1.2vw, 0.75rem)",
                   letterSpacing: "0.3em",
                   color: "#b4a58c",
                 }}
-                animate={{ opacity: [0.4, 1, 0.4] }}
+                animate={{ opacity: [0.3, 0.8, 0.3] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
               >
                 ▲
