@@ -1,12 +1,11 @@
 import { useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { hotels } from "@/data/hotels";
 import { ArrowLeft, Star, X, Waves, Sparkles, UtensilsCrossed, TreePalm, Dumbbell, Wine, Car, Phone, Wifi, ArrowRight, Mail, Instagram, Coffee, Gamepad2, ParkingCircle, Droplets, Scissors, Menu } from "lucide-react";
 import constructionImg from "@/assets/construction-coming-soon.png";
 import ElevatorTransition from "@/components/ElevatorTransition";
 import { useElevatorNavigation } from "@/hooks/useElevatorNavigation";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const amenityIcons: Record<string, React.ReactNode> = {
   "Infinity Pool": <Waves className="w-4 h-4" />,
@@ -35,63 +34,37 @@ const amenityIcons: Record<string, React.ReactNode> = {
   "Kids Zone": <Gamepad2 className="w-4 h-4" />,
 };
 
-const expandedDescriptions: Record<string, string> = {
-  "CHAUKAA Restaurant": "CHAUKAA Restaurant at Hotel Evara is a multi-cuisine dining destination that seats up to 50 guests in a warm, contemporary setting. Our carefully curated menu features a blend of traditional Indian flavors and international cuisine, prepared by experienced chefs using fresh, locally sourced ingredients.\n\nThe restaurant offers breakfast, lunch, and dinner services with both à la carte and buffet options. Whether you're looking for a hearty North Indian thali, aromatic biryanis, flavorful Chinese dishes, or Continental classics — our kitchen delivers excellence with every plate.\n\nSpecial features include:\n• Live cooking stations during weekend brunches\n• Private dining arrangements for intimate celebrations\n• Seasonal menu rotations featuring regional specialties\n• Customizable group dining packages for families and corporate teams\n• Complimentary welcome drinks for hotel guests\n\nOperating Hours: Breakfast 7:00 AM – 10:30 AM | Lunch 12:00 PM – 3:30 PM | Dinner 7:00 PM – 11:00 PM",
-  "Mandap Banquet Hall": "The Mandap Banquet Hall at Hotel Evara is a grand, versatile event space designed to host everything from intimate gatherings to large-scale celebrations. With its elegant interiors, modern lighting systems, and premium sound equipment, every event becomes a memorable experience.\n\nOur dedicated events team works closely with you to plan and execute flawless occasions, from décor and catering to entertainment and guest management.\n\nIdeal for:\n• Weddings & Receptions — Transform the hall into your dream wedding venue with customizable décor themes, floral arrangements, and stage setups\n• Engagement Ceremonies — Elegant settings for your special announcement with personalized touches\n• Birthday Celebrations — From milestone birthdays to surprise parties, we handle every detail\n• Corporate Events — Professional setups for conferences, seminars, product launches, and team-building events\n• Social Gatherings — Kitty parties, reunion dinners, anniversary celebrations, and festival events\n\nCapacity: Up to 200 guests (seated) | 350 guests (cocktail style)\nAmenities: Professional sound system, LED projector, customizable lighting, AC, valet parking, dedicated event coordinator\nCatering: In-house multi-cuisine catering with vegetarian and non-vegetarian options, customizable menus",
-  "Open Rooftop Dining": "Experience the magic of dining under the stars at Hotel Evara's Open Rooftop. Perched atop the hotel, this enchanting space offers panoramic views of the city skyline, creating an unforgettable ambiance for every occasion.\n\nThe rooftop is designed with contemporary outdoor furniture, ambient string lights, and lush green accents that create a perfect blend of sophistication and natural beauty.\n\nPerfect for:\n• Romantic dinners with a view — Special couple's table with personalized service\n• Private celebrations — Birthday parties, anniversaries, and proposal setups\n• Corporate socials — Relaxed networking events and team celebrations\n• Weekend brunches — Enjoy sunny mornings with a curated brunch menu\n• Live music evenings — Select nights feature acoustic performances\n\nCapacity: Up to 40 guests\nAvailability: Open during evenings (6:00 PM onwards), weather permitting\nSpecial Services: Customizable décor, private event bookings, DJ setup available on request",
-  "Comfortable Rooms & Suites": "Hotel Evara offers 22 thoughtfully designed rooms across three categories, each crafted to provide the perfect balance of comfort, style, and modern amenities.\n\n🏨 Twin Deluxe Rooms (5 rooms)\nSpacious rooms with twin bed configuration, ideal for business travelers and friends. Features include split AC, high-speed Wi-Fi, 32-inch LED TV, tea/coffee maker, and premium bath amenities.\nPricing: Single ₹2,999 | Double ₹3,799\n\n🏨 Deluxe Rooms (13 rooms)\nOur most popular category with king-size beds, contemporary décor, and city views. Equipped with all modern amenities including room service, laundry, and 24-hour hot water.\nPricing: Single ₹2,999 | Double ₹3,799\n\n🏨 Suite Rooms (4 rooms)\nThe pinnacle of luxury at Hotel Evara. Spacious suites with separate living area, premium furnishings, and exclusive amenities for guests seeking an elevated experience.\nPricing: Single ₹3,999 | Double ₹4,499\n\nAll Rooms Include:\n• Complimentary breakfast\n• High-speed Wi-Fi\n• 24-hour room service\n• Daily housekeeping\n• UPI & card payment accepted\n\nCheck-in: 12:00 Noon | Check-out: 11:00 AM\nEarly check-in and late check-out available on request (subject to availability)",
-  "Multi-Cuisine Restaurant": "Dalaan Resort's Multi-Cuisine Restaurant offers an extensive dining experience with a menu that spans Indian, Chinese, Continental, and regional specialties. Set within the resort's lush green campus, the restaurant provides a serene dining environment perfect for families, couples, and groups.\n\nOur team of experienced chefs crafts each dish with premium ingredients and traditional techniques, ensuring an authentic culinary journey.\n\nHighlights:\n• Expansive menu covering North Indian, South Indian, Chinese, and Continental cuisines\n• Special Mithila cuisine corner featuring regional delicacies\n• Live BBQ and tandoor stations during dinner service\n• Private dining pavilions for special occasions\n• Customizable event catering with vegetarian and non-vegetarian options\n• Kid-friendly menu options available\n\nThe restaurant also provides outdoor seating in the garden area, perfect for breakfast and afternoon tea sessions surrounded by nature.",
-  "Banquet Halls & Open Lawns": "Dalaan Resort features one of the most impressive event spaces in the region, with multiple banquet halls and four beautifully landscaped open lawns, each with unique characteristics to suit different event styles.\n\n🎪 Indoor Banquet Halls\nMultiple air-conditioned halls with modern AV equipment, customizable lighting, and elegant interiors. Perfect for weddings, receptions, corporate conferences, and social gatherings.\n\n🌿 Mithila Lawn\nThe signature outdoor space surrounded by traditional Mithila-inspired décor and fountain areas. Ideal for grand weddings and large cultural events.\n\n🌿 Garden Lawn\nA lush green space with mature trees and flower beds, perfect for daytime events, mehndi ceremonies, and garden parties.\n\n🌿 Poolside Lawn\nAdjacent to the swimming pool, this space offers a unique blend of water features and greenery for cocktail parties and evening celebrations.\n\n🌿 Fountain Lawn\nCentered around decorative fountains with ambient lighting, ideal for engagement ceremonies and intimate gatherings.\n\nCapacity: 100 to 1500+ guests across different spaces\nServices: In-house event planning, professional décor teams, catering, DJ & sound, valet parking, bride & groom preparation rooms",
-  "Club House & Leisure": "The Club House at Dalaan Resort is a comprehensive leisure and recreation facility designed for guests of all ages. Whether you're looking to unwind, get active, or simply have fun — our club house has something for everyone.\n\n🏊 Swimming Pool\nA large, well-maintained swimming pool with separate kids' section. Poolside loungers, umbrellas, and a refreshment counter make it perfect for a full day of relaxation.\n\n💃 Rain Dance Area\nAn exciting rain dance floor with music and colored lighting — perfect for parties, celebrations, and weekend fun.\n\n💆 Spa & Salon\nProfessional spa services including aromatherapy massages, facials, body treatments, and salon services. Our trained therapists provide personalized treatments using premium products.\n\n🎮 Kids Zone\nA dedicated play area with age-appropriate activities, games, and supervised entertainment to keep young guests engaged and happy.\n\n🎱 Indoor Games\nTable tennis, snooker, carrom, and board games available in the air-conditioned games room.\n\nAll facilities are available exclusively to resort guests and event attendees.",
-  "Luxury Stays & Villas": "Dalaan Resort offers an exceptional accommodation experience with luxury rooms and exclusive villa rooms, each designed to provide privacy, comfort, and a connection to nature.\n\n🏠 Luxury Rooms\nSpacious rooms with premium furnishings, modern amenities, and views of the resort's landscaped gardens. Each room features king-size beds, high-speed Wi-Fi, LED TV, mini-bar, tea/coffee maker, and premium bathroom amenities.\n\n🏡 Villa Rooms (Mithila Lawn Area)\nExclusive villa-style accommodations nestled in the Mithila Lawn area, surrounded by nature and tranquility. These private spaces offer:\n• Separate living and sleeping areas\n• Private sit-out with garden views\n• Premium interiors with traditional Mithila art accents\n• Enhanced privacy and dedicated butler service\n\n👰 Bridal & Groom Preparation Rooms\nSpecially designed rooms for wedding parties, featuring:\n• Full-length mirrors and professional lighting\n• Spacious dressing areas\n• Air-conditioned comfort\n• Room service and refreshments\n• Direct access to event venues\n\nAll accommodations include complimentary breakfast, 24-hour room service, housekeeping, and access to all resort facilities including the swimming pool, spa, and club house.",
-};
-
-const getExpandedDescription = (title: string, fallback: string): string => {
-  return expandedDescriptions[title] || fallback;
-};
+const toSlug = (title: string) => title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
 
 const ParallaxImage = ({ src, alt, className }: { src: string; alt: string; className?: string }) => {
   const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
 
   return (
     <div ref={ref} className={`overflow-hidden ${className || ""}`}>
-      <motion.img
-        src={src}
-        alt={alt}
-        className="w-full h-[115%] object-cover"
-        style={{ y }}
-        loading="lazy"
-      />
+      <motion.img src={src} alt={alt} className="w-full h-[115%] object-cover" style={{ y }} loading="lazy" />
     </div>
   );
 };
 
 const HotelPage = () => {
   const { id } = useParams();
+  const navigateTo = useNavigate();
   const { isTransitioning, navigateWithElevator, handleTransitionComplete, handleDoorsFullyClosed } = useElevatorNavigation();
-  const navigate = navigateWithElevator;
   const hotel = hotels.find((h) => h.id === id);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedHighlight, setSelectedHighlight] = useState<number | null>(null);
 
   const heroRef = useRef(null);
-  const { scrollYProgress: heroScroll } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
+  const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(heroScroll, [0, 1], ["0%", "25%"]);
 
   if (!hotel) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <h1 className="text-3xl font-display text-foreground font-light">Hotel not found</h1>
-          <button onClick={() => navigate("/")} className="mt-4 text-muted-foreground underline font-body font-light">Return home</button>
+          <h1 className="text-3xl font-display text-foreground" style={{ fontWeight: 300 }}>Hotel not found</h1>
+          <button onClick={() => navigateWithElevator("/")} className="mt-4 text-muted-foreground underline font-body">Return home</button>
         </div>
       </div>
     );
@@ -104,11 +77,12 @@ const HotelPage = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-background section-padding text-center">
         <ElevatorTransition isActive={isTransitioning} onComplete={handleTransitionComplete} onDoorsFullyClosed={handleDoorsFullyClosed} />
         <img src={constructionImg} alt="Under Construction" className="w-56 md:w-72 mb-6 opacity-80" />
-        <h1 className="text-3xl md:text-4xl font-display text-foreground font-light">{hotel.name}</h1>
-        <p className="text-muted-foreground font-body mt-2 text-base tracking-wider font-light">Opening Soon</p>
+        <h1 className="text-3xl md:text-4xl font-display text-foreground" style={{ fontWeight: 300 }}>{hotel.name}</h1>
+        <p className="text-muted-foreground font-body mt-2 text-base tracking-wider" style={{ fontWeight: 400 }}>Opening Soon</p>
         <button
-          onClick={() => navigate("/")}
-          className="mt-8 group inline-flex items-center gap-2 border border-primary/30 text-primary px-7 py-2.5 text-[9px] tracking-[0.25em] uppercase font-body font-light hover:bg-primary/5 hover:border-primary/50 transition-all duration-300 rounded-full"
+          onClick={() => navigateWithElevator("/")}
+          className="mt-8 group inline-flex items-center gap-2 border border-primary/30 text-primary px-7 py-2.5 text-[9px] tracking-[0.25em] uppercase font-body hover:bg-primary/5 hover:border-primary/50 transition-all duration-300 rounded-full"
+          style={{ fontWeight: 500 }}
         >
           Back to Home
           <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
@@ -124,20 +98,20 @@ const HotelPage = () => {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 glass-nav">
         <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-14">
-          <button onClick={() => navigate("/")} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
+          <button onClick={() => navigateWithElevator("/")} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
             <ArrowLeft className="w-4 h-4" />
-            <span className="text-[10px] tracking-wider uppercase font-body font-light hidden sm:inline">Back</span>
+            <span className="text-[10px] tracking-wider uppercase font-body hidden sm:inline" style={{ fontWeight: 400 }}>Back</span>
           </button>
 
           <div className="absolute left-1/2 -translate-x-1/2">
-            <span className="text-sm tracking-[0.15em] uppercase font-display font-light">{hotel.name}</span>
+            <span className="text-sm tracking-[0.15em] uppercase font-display" style={{ fontWeight: 300 }}>{hotel.name}</span>
           </div>
 
           <div className="hidden md:flex items-center gap-5">
-            <a href="#about" className="text-[9px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body font-light">About</a>
-            <a href="#highlights" className="text-[9px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body font-light">Experience</a>
-            <a href="#rooms" className="text-[9px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body font-light">Rooms</a>
-            <a href="#amenities" className="text-[9px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body font-light">Amenities</a>
+            <a href="#about" className="text-[9px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body" style={{ fontWeight: 400 }}>About</a>
+            <a href="#highlights" className="text-[9px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body" style={{ fontWeight: 400 }}>Experience</a>
+            <a href="#rooms" className="text-[9px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body" style={{ fontWeight: 400 }}>Rooms</a>
+            <a href="#amenities" className="text-[9px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body" style={{ fontWeight: 400 }}>Amenities</a>
           </div>
 
           <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-foreground">
@@ -145,7 +119,6 @@ const HotelPage = () => {
           </button>
         </div>
 
-        {/* Mobile menu — luxury */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
@@ -173,7 +146,7 @@ const HotelPage = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.06 }}
                   >
-                    <span className="text-xs tracking-[0.15em] uppercase font-body font-light">{item.label}</span>
+                    <span className="text-xs tracking-[0.15em] uppercase font-body" style={{ fontWeight: 400 }}>{item.label}</span>
                   </motion.a>
                 ))}
                 <div className="w-8 h-px bg-primary/20 mt-1" />
@@ -193,22 +166,20 @@ const HotelPage = () => {
               <Star key={i} className="w-2.5 h-2.5 text-primary fill-primary" />
             ))}
           </div>
-          <span className="text-[9px] tracking-[0.3em] uppercase text-primary-foreground/50 font-body font-light">
-            {hotel.tagline}
-          </span>
-          <h1 className="text-3xl md:text-5xl font-display text-primary-foreground mt-1 font-light tracking-wide">{hotel.name}</h1>
+          <span className="text-[9px] tracking-[0.3em] uppercase text-primary-foreground/50 font-body" style={{ fontWeight: 400 }}>{hotel.tagline}</span>
+          <h1 className="text-3xl md:text-5xl font-display text-primary-foreground mt-1 tracking-wide" style={{ fontWeight: 300 }}>{hotel.name}</h1>
         </div>
       </section>
 
       {/* About */}
       <section id="about" className="section-padding max-w-3xl mx-auto text-center">
-        <span className="text-[9px] tracking-[0.3em] uppercase text-primary/60 font-body font-light">Welcome to</span>
-        <h2 className="text-2xl md:text-4xl font-display mt-2 text-foreground font-light tracking-wide">{hotel.name}</h2>
+        <span className="text-[9px] tracking-[0.3em] uppercase text-primary/60 font-body" style={{ fontWeight: 400 }}>Welcome to</span>
+        <h2 className="text-2xl md:text-4xl font-display mt-2 text-foreground tracking-wide" style={{ fontWeight: 300 }}>{hotel.name}</h2>
         <div className="gold-divider mt-3 mb-5" />
-        <p className="text-muted-foreground font-body leading-relaxed text-sm font-light">{hotel.description}</p>
+        <p className="text-muted-foreground font-body leading-relaxed text-sm" style={{ fontWeight: 400 }}>{hotel.description}</p>
       </section>
 
-      {/* Highlights with parallax images */}
+      {/* Highlights */}
       <section id="highlights" className="bg-secondary">
         {hotel.highlights.map((highlight, i) => (
           <div key={i} className="section-padding">
@@ -217,13 +188,14 @@ const HotelPage = () => {
                 <ParallaxImage src={highlight.image} alt={highlight.title} className="rounded-2xl aspect-[4/3]" />
               </div>
               <div className="flex-1">
-                <span className="text-[9px] tracking-[0.3em] uppercase text-primary/60 font-body font-light">Experience</span>
-                <h3 className="text-xl md:text-3xl font-display mt-1 text-foreground font-light tracking-wide">{highlight.title}</h3>
+                <span className="text-[9px] tracking-[0.3em] uppercase text-primary/60 font-body" style={{ fontWeight: 400 }}>Experience</span>
+                <h3 className="text-xl md:text-3xl font-display mt-1 text-foreground tracking-wide" style={{ fontWeight: 300 }}>{highlight.title}</h3>
                 <div className="gold-divider-left mt-2 mb-3" />
-                <p className="text-muted-foreground font-body leading-relaxed text-sm line-clamp-3 font-light">{highlight.description}</p>
+                <p className="text-muted-foreground font-body leading-relaxed text-sm line-clamp-3" style={{ fontWeight: 400 }}>{highlight.description}</p>
                 <button
-                  onClick={() => setSelectedHighlight(i)}
-                  className="mt-5 group inline-flex items-center gap-2 text-[9px] tracking-[0.25em] uppercase text-primary font-body font-light hover:gap-3 transition-all"
+                  onClick={() => navigateTo(`/hotel/${id}/${toSlug(highlight.title)}`)}
+                  className="mt-5 group inline-flex items-center gap-2 text-[9px] tracking-[0.25em] uppercase text-primary font-body hover:gap-3 transition-all"
+                  style={{ fontWeight: 500 }}
                 >
                   Learn More
                   <ArrowRight className="w-3 h-3" />
@@ -234,61 +206,11 @@ const HotelPage = () => {
         ))}
       </section>
 
-      {/* Learn More Dialog — luxury redesign */}
-      <Dialog open={selectedHighlight !== null} onOpenChange={(open) => !open && setSelectedHighlight(null)}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 border-0 rounded-2xl shadow-2xl">
-          {selectedHighlight !== null && hotel.highlights[selectedHighlight] && (
-            <>
-              <div className="relative">
-                <img
-                  src={hotel.highlights[selectedHighlight].image}
-                  alt={hotel.highlights[selectedHighlight].title}
-                  className="w-full aspect-[16/9] object-cover rounded-t-2xl"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent rounded-t-2xl" />
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <span className="text-[8px] tracking-[0.3em] uppercase text-primary-foreground/50 font-body font-light">
-                    {hotel.name}
-                  </span>
-                  <h3 className="text-xl md:text-2xl font-display text-primary-foreground font-light tracking-wide mt-0.5">
-                    {hotel.highlights[selectedHighlight].title}
-                  </h3>
-                </div>
-              </div>
-              <div className="p-6 md:p-8">
-                <DialogHeader className="sr-only">
-                  <DialogTitle>{hotel.highlights[selectedHighlight].title}</DialogTitle>
-                  <DialogDescription>Details about {hotel.highlights[selectedHighlight].title}</DialogDescription>
-                </DialogHeader>
-                <div className="space-y-3">
-                  {getExpandedDescription(hotel.highlights[selectedHighlight].title, hotel.highlights[selectedHighlight].description)
-                    .split("\n")
-                    .filter(Boolean)
-                    .map((para, idx) => (
-                      <p key={idx} className="text-sm text-muted-foreground font-body leading-relaxed whitespace-pre-wrap font-light">
-                        {para}
-                      </p>
-                    ))}
-                </div>
-                <div className="mt-6 pt-4 border-t border-border/50">
-                  <p className="text-[10px] text-muted-foreground/60 font-body font-light">
-                    For reservations and inquiries, contact us at{" "}
-                    <a href="tel:+919876543210" className="text-primary hover:underline">+91 98765 43210</a>
-                    {" "}or{" "}
-                    <a href="mailto:info@evaraco.com" className="text-primary hover:underline">info@evaraco.com</a>
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
-
       {/* Gallery */}
       <section className="section-padding">
         <div className="text-center mb-10">
-          <span className="text-[9px] tracking-[0.3em] uppercase text-primary/60 font-body font-light">Gallery</span>
-          <h3 className="text-xl md:text-3xl font-display mt-2 text-foreground font-light tracking-wide">Moments & Emotions</h3>
+          <span className="text-[9px] tracking-[0.3em] uppercase text-primary/60 font-body" style={{ fontWeight: 400 }}>Gallery</span>
+          <h3 className="text-xl md:text-3xl font-display mt-2 text-foreground tracking-wide" style={{ fontWeight: 300 }}>Moments & Emotions</h3>
           <div className="gold-divider mt-3" />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 max-w-6xl mx-auto">
@@ -301,10 +223,10 @@ const HotelPage = () => {
       {/* Rooms & Suites */}
       <section id="rooms" className="section-padding bg-secondary">
         <div className="text-center mb-12">
-          <span className="text-[9px] tracking-[0.3em] uppercase text-primary/60 font-body font-light">Accommodations</span>
-          <h2 className="text-2xl md:text-4xl font-display mt-2 text-foreground font-light tracking-wide">Rooms & Suites</h2>
+          <span className="text-[9px] tracking-[0.3em] uppercase text-primary/60 font-body" style={{ fontWeight: 400 }}>Accommodations</span>
+          <h2 className="text-2xl md:text-4xl font-display mt-2 text-foreground tracking-wide" style={{ fontWeight: 300 }}>Rooms & Suites</h2>
           <div className="gold-divider mt-4" />
-          <p className="text-sm text-muted-foreground font-body mt-4 max-w-md mx-auto leading-relaxed font-light">
+          <p className="text-sm text-muted-foreground font-body mt-4 max-w-md mx-auto leading-relaxed" style={{ fontWeight: 400 }}>
             Thoughtfully designed for comfort and elegance.
           </p>
         </div>
@@ -313,48 +235,41 @@ const HotelPage = () => {
           {hotel.rooms.map((room, i) => (
             <motion.div
               key={i}
-              className="group bg-card rounded-2xl overflow-hidden border border-border/20 transition-all duration-300"
+              className="group bg-card rounded-3xl overflow-hidden border border-border/20 transition-all duration-300"
               style={{ boxShadow: "0 2px 16px rgba(0,0,0,0.03)" }}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              whileHover={{
-                y: -6,
-                boxShadow: "0 12px 40px rgba(0,0,0,0.08)",
-              }}
+              whileHover={{ y: -6, boxShadow: "0 12px 40px rgba(0,0,0,0.08)" }}
             >
-              <div className="relative overflow-hidden m-2.5 rounded-xl">
-                <img
-                  src={room.image}
-                  alt={room.name}
-                  className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-600 ease-out"
-                  loading="lazy"
-                />
+              <div className="relative overflow-hidden m-3 rounded-2xl">
+                <img src={room.image} alt={room.name} className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-500 ease-out" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent" />
-                <div className="absolute top-2.5 right-2.5 rounded-xl px-3 py-1.5 backdrop-blur-lg" style={{
+                <div className="absolute top-3 right-3 rounded-xl px-3 py-1.5 backdrop-blur-lg" style={{
                   background: "hsl(var(--background) / 0.88)",
                   border: "1px solid hsl(var(--border) / 0.3)",
                 }}>
-                  <span className="text-sm font-display font-light text-foreground">{room.price}</span>
+                  <span className="text-sm font-display text-foreground" style={{ fontWeight: 400 }}>{room.price}</span>
                   <span className="text-[7px] text-muted-foreground font-body ml-1 uppercase tracking-widest">/night</span>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-3">
-                  <h3 className="text-base font-display text-background font-light drop-shadow-md tracking-wide">{room.name}</h3>
+                  <h3 className="text-base font-display text-background drop-shadow-md tracking-wide" style={{ fontWeight: 300 }}>{room.name}</h3>
                 </div>
               </div>
 
               <div className="px-4 pb-4 pt-1.5">
-                <p className="text-[11px] text-muted-foreground font-body leading-relaxed line-clamp-2 font-light">{room.description}</p>
+                <p className="text-[11px] text-muted-foreground font-body leading-relaxed line-clamp-2" style={{ fontWeight: 400 }}>{room.description}</p>
                 <div className="flex flex-wrap gap-1 mt-2.5">
                   {room.features.slice(0, 3).map((f) => (
-                    <span key={f} className="text-[7px] px-2 py-0.5 rounded-full bg-primary/5 border border-primary/10 text-primary/60 font-body tracking-widest uppercase font-light">
+                    <span key={f} className="text-[7px] px-2 py-0.5 rounded-full bg-primary/5 border border-primary/10 text-primary/60 font-body tracking-widest uppercase" style={{ fontWeight: 400 }}>
                       {f}
                     </span>
                   ))}
                 </div>
                 <motion.button
-                  className="mt-3 w-full py-2.5 rounded-lg text-[9px] tracking-[0.2em] uppercase font-display font-light border border-foreground/10 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
+                  className="mt-3 w-full py-2.5 rounded-xl text-[9px] tracking-[0.2em] uppercase font-body border border-foreground/10 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
+                  style={{ fontWeight: 500 }}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.97 }}
                 >
@@ -369,8 +284,8 @@ const HotelPage = () => {
       {/* Amenities */}
       <section id="amenities" className="section-padding">
         <div className="text-center mb-10">
-          <span className="text-[9px] tracking-[0.3em] uppercase text-primary/60 font-body font-light">Experience</span>
-          <h2 className="text-2xl md:text-3xl font-display mt-2 text-foreground font-light tracking-wide">Amenities</h2>
+          <span className="text-[9px] tracking-[0.3em] uppercase text-primary/60 font-body" style={{ fontWeight: 400 }}>Experience</span>
+          <h2 className="text-2xl md:text-3xl font-display mt-2 text-foreground tracking-wide" style={{ fontWeight: 300 }}>Amenities</h2>
           <div className="gold-divider mt-3" />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto">
@@ -386,7 +301,7 @@ const HotelPage = () => {
               <div className="text-primary/70">
                 {amenityIcons[amenity] || <Wifi className="w-4 h-4" />}
               </div>
-              <span className="text-[10px] text-muted-foreground font-body font-light">{amenity}</span>
+              <span className="text-[10px] text-muted-foreground font-body" style={{ fontWeight: 400 }}>{amenity}</span>
             </motion.div>
           ))}
         </div>
@@ -394,15 +309,17 @@ const HotelPage = () => {
 
       {/* CTA */}
       <section className="section-padding bg-foreground text-center">
-        <span className="text-[9px] tracking-[0.3em] uppercase text-primary/70 font-body font-light">Ready to Experience</span>
-        <h2 className="text-2xl md:text-3xl font-display mt-2 text-background font-light tracking-wide">{hotel.name}</h2>
+        <span className="text-[9px] tracking-[0.3em] uppercase text-primary/70 font-body" style={{ fontWeight: 400 }}>Ready to Experience</span>
+        <h2 className="text-2xl md:text-3xl font-display mt-2 text-background tracking-wide" style={{ fontWeight: 300 }}>{hotel.name}</h2>
         <div className="gold-divider mt-3 mb-5" />
-        <p className="text-background/40 font-body max-w-sm mx-auto text-sm font-light">
+        <p className="text-background/40 font-body max-w-sm mx-auto text-sm" style={{ fontWeight: 400 }}>
           Reserve your stay and discover unparalleled luxury.
         </p>
-        <button className="mt-6 px-8 py-2.5 bg-primary text-primary-foreground text-[9px] tracking-[0.25em] uppercase font-body font-light rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all duration-300">
-          Reserve Your Stay
-        </button>
+        <div className="flex items-center justify-center gap-4 mt-6">
+          <a href="tel:+919031027961" className="px-8 py-2.5 bg-primary text-primary-foreground text-[9px] tracking-[0.25em] uppercase font-body rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 inline-flex items-center gap-2" style={{ fontWeight: 500 }}>
+            <Phone className="w-3 h-3" /> Reserve Now
+          </a>
+        </div>
       </section>
 
       {/* Footer */}
@@ -410,24 +327,24 @@ const HotelPage = () => {
         <div className="max-w-6xl mx-auto px-5 md:px-10 py-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
             <div className="flex flex-col items-center md:items-start gap-1">
-              <span className="text-base tracking-[0.25em] uppercase font-display font-light text-background">EVARA Co.</span>
-              <span className="text-[9px] tracking-[0.15em] uppercase text-primary/60 font-body font-light">Luxury Hospitality</span>
+              <span className="text-base tracking-[0.25em] uppercase font-display text-background" style={{ fontWeight: 300 }}>EVARA Co.</span>
+              <span className="text-[9px] tracking-[0.15em] uppercase text-primary/60 font-body" style={{ fontWeight: 400 }}>Luxury Hospitality</span>
             </div>
 
             <div className="flex flex-col items-center gap-2">
-              <span className="text-[9px] tracking-[0.2em] uppercase text-background/30 font-body font-light mb-1">Quick Links</span>
-              <a href="#about" className="text-[10px] text-background/40 hover:text-primary transition-colors font-body font-light">About</a>
-              <a href="#rooms" className="text-[10px] text-background/40 hover:text-primary transition-colors font-body font-light">Rooms & Suites</a>
-              <a href="#amenities" className="text-[10px] text-background/40 hover:text-primary transition-colors font-body font-light">Amenities</a>
+              <span className="text-[9px] tracking-[0.2em] uppercase text-background/30 font-body mb-1" style={{ fontWeight: 400 }}>Quick Links</span>
+              <a href="#about" className="text-[10px] text-background/40 hover:text-primary transition-colors font-body" style={{ fontWeight: 400 }}>About</a>
+              <a href="#rooms" className="text-[10px] text-background/40 hover:text-primary transition-colors font-body" style={{ fontWeight: 400 }}>Rooms & Suites</a>
+              <a href="#amenities" className="text-[10px] text-background/40 hover:text-primary transition-colors font-body" style={{ fontWeight: 400 }}>Amenities</a>
             </div>
 
             <div className="flex flex-col items-center md:items-end gap-2">
-              <span className="text-[9px] tracking-[0.2em] uppercase text-background/30 font-body font-light mb-1">Connect</span>
+              <span className="text-[9px] tracking-[0.2em] uppercase text-background/30 font-body mb-1" style={{ fontWeight: 400 }}>Connect</span>
               <div className="flex gap-3">
                 {[
                   { href: "https://instagram.com", icon: Instagram, external: true },
-                  { href: "mailto:info@evaraco.com", icon: Mail },
-                  { href: "tel:+919876543210", icon: Phone },
+                  { href: "mailto:info@hotelevara.in", icon: Mail },
+                  { href: "tel:+919031027961", icon: Phone },
                 ].map((link, i) => (
                   <a
                     key={i}
@@ -443,7 +360,7 @@ const HotelPage = () => {
           </div>
 
           <div className="mt-8 pt-5 border-t border-background/10 text-center">
-            <p className="text-[9px] text-background/25 font-body font-light">© 2025 EVARA Co. All rights reserved.</p>
+            <p className="text-[9px] text-background/25 font-body" style={{ fontWeight: 400 }}>© 2025 EVARA Co. All rights reserved.</p>
           </div>
         </div>
       </footer>
