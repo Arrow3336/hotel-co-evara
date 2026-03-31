@@ -12,63 +12,67 @@ const Index = () => {
 
   const stagger = {
     hidden: {},
-    show: { transition: { staggerChildren: 0.18, delayChildren: 0.1 } },
+    show: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
   } as const;
 
   const fadeUp = {
-    hidden: { opacity: 0, y: 30 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" as const } },
+    hidden: { opacity: 0, y: 24 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" as const } },
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground font-body overflow-x-hidden">
       <ElevatorTransition isActive={isTransitioning} onComplete={handleTransitionComplete} onDoorsFullyClosed={handleDoorsFullyClosed} />
 
-      {/* Intro Animation — refined */}
+      {/* Intro Loader — luxury golden reveal */}
       <AnimatePresence mode="wait">
         {!introComplete && (
           <motion.div
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-background"
+            className="fixed inset-0 z-[9998] flex items-center justify-center"
+            style={{ background: "hsl(var(--foreground))" }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            <motion.div className="flex flex-col items-center gap-4 z-10">
-              {/* Subtle line above */}
+            <motion.div className="flex flex-col items-center gap-3 z-10">
+              {/* Gold line top */}
               <motion.div
-                className="w-12 h-px bg-primary/30"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: [0, 1, 1, 0] }}
-                transition={{ duration: 2.4, times: [0, 0.2, 0.75, 1], ease: "easeInOut" }}
+                className="h-px"
+                style={{ background: "linear-gradient(90deg, transparent, hsl(var(--gold)), transparent)" }}
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 48, opacity: [0, 1, 1, 0] }}
+                transition={{ duration: 1.6, times: [0, 0.15, 0.7, 1], ease: "easeInOut" }}
               />
+
+              {/* Main brand */}
               <motion.span
-                className="font-display text-foreground font-light"
-                style={{ fontSize: "clamp(1.4rem, 4vw, 2.8rem)", letterSpacing: "0.35em" }}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{
-                  opacity: [0, 1, 1, 0],
-                  y: [6, 0, 0, -4],
-                }}
-                transition={{ duration: 2.4, times: [0, 0.2, 0.75, 1], ease: "easeInOut" }}
+                className="font-display text-gold"
+                style={{ fontSize: "clamp(1.8rem, 5vw, 3.4rem)", letterSpacing: "0.4em", fontWeight: 300 }}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: [0, 1, 1, 0], y: [8, 0, 0, -6] }}
+                transition={{ duration: 1.6, times: [0, 0.15, 0.7, 1], ease: "easeInOut" }}
               >
                 EVARA
               </motion.span>
+
+              {/* Subtitle */}
               <motion.span
-                className="text-[10px] tracking-[0.5em] uppercase text-muted-foreground font-body"
+                className="text-[9px] tracking-[0.6em] uppercase font-body"
+                style={{ color: "hsl(var(--gold-light))" }}
                 initial={{ opacity: 0 }}
-                animate={{
-                  opacity: [0, 0.6, 0.6, 0],
-                }}
-                transition={{ duration: 2.4, times: [0, 0.25, 0.7, 1], ease: "easeInOut" }}
+                animate={{ opacity: [0, 0.5, 0.5, 0] }}
+                transition={{ duration: 1.6, times: [0, 0.2, 0.65, 1], ease: "easeInOut" }}
                 onAnimationComplete={() => setIntroComplete(true)}
               >
                 Luxury Hospitality
               </motion.span>
-              {/* Subtle line below */}
+
+              {/* Gold line bottom */}
               <motion.div
-                className="w-12 h-px bg-primary/30"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: [0, 1, 1, 0] }}
-                transition={{ duration: 2.4, times: [0, 0.2, 0.75, 1], ease: "easeInOut" }}
+                className="h-px"
+                style={{ background: "linear-gradient(90deg, transparent, hsl(var(--gold)), transparent)" }}
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 48, opacity: [0, 1, 1, 0] }}
+                transition={{ duration: 1.6, times: [0, 0.15, 0.7, 1], ease: "easeInOut" }}
               />
             </motion.div>
           </motion.div>
@@ -88,10 +92,10 @@ const Index = () => {
               {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
             <div className="hidden md:flex items-center gap-5">
-              <a href="tel:+919876543210" className="text-[10px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
+              <a href="tel:+919031027961" className="text-[10px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
                 <Phone className="w-3 h-3" /> Contact
               </a>
-              <a href="mailto:info@evaraco.com" className="text-[10px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
+              <a href="mailto:info@hotelevara.in" className="text-[10px] tracking-[0.12em] uppercase text-muted-foreground hover:text-primary transition-colors font-body flex items-center gap-1.5">
                 <Mail className="w-3 h-3" /> Email
               </a>
             </div>
@@ -99,7 +103,7 @@ const Index = () => {
 
           {/* Center Logo */}
           <div className="absolute left-1/2 -translate-x-1/2">
-            <span className="text-sm tracking-[0.25em] uppercase font-display text-foreground font-light">
+            <span className="text-sm tracking-[0.25em] uppercase font-display text-foreground" style={{ fontWeight: 300 }}>
               EVARA Co.
             </span>
           </div>
@@ -112,7 +116,7 @@ const Index = () => {
           <div className="md:hidden w-4" />
         </div>
 
-        {/* Mobile Menu — luxury style */}
+        {/* Mobile Menu */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
@@ -124,10 +128,10 @@ const Index = () => {
               style={{ background: "hsl(var(--background))", borderTop: "1px solid hsl(var(--border) / 0.4)" }}
             >
               <div className="px-8 py-6 flex flex-col gap-5">
-                <span className="text-[8px] tracking-[0.4em] uppercase text-muted-foreground/50 font-body">Menu</span>
+                <span className="text-[8px] tracking-[0.4em] uppercase text-muted-foreground/40 font-body">Menu</span>
                 {[
-                  { href: "tel:+919876543210", icon: Phone, label: "Contact" },
-                  { href: "mailto:info@evaraco.com", icon: Mail, label: "Email" },
+                  { href: "tel:+919031027961", icon: Phone, label: "Contact" },
+                  { href: "mailto:info@hotelevara.in", icon: Mail, label: "Email" },
                   { href: "https://instagram.com", icon: Instagram, label: "Follow Us" },
                 ].map((item, i) => (
                   <motion.a
@@ -140,7 +144,7 @@ const Index = () => {
                     transition={{ delay: i * 0.08 }}
                   >
                     <item.icon className="w-3.5 h-3.5 text-primary/50 group-hover:text-primary transition-colors" />
-                    <span className="text-xs tracking-[0.15em] uppercase font-body font-light">{item.label}</span>
+                    <span className="text-xs tracking-[0.15em] uppercase font-body" style={{ fontWeight: 400 }}>{item.label}</span>
                   </motion.a>
                 ))}
                 <div className="w-8 h-px bg-primary/20 mt-1" />
@@ -160,11 +164,11 @@ const Index = () => {
         >
           <div className="flex items-center justify-center gap-3 mb-3">
             <div className="w-8 h-px bg-primary/30" />
-            <span className="text-[9px] tracking-[0.4em] uppercase text-primary/70 font-body font-light">Portfolio</span>
+            <span className="text-[9px] tracking-[0.4em] uppercase text-primary/70 font-body" style={{ fontWeight: 400 }}>Portfolio</span>
             <div className="w-8 h-px bg-primary/30" />
           </div>
-          <h1 className="text-3xl md:text-5xl font-display text-foreground font-light tracking-wide">Our Properties</h1>
-          <p className="text-sm text-muted-foreground font-body mt-3 max-w-md mx-auto leading-relaxed font-light">
+          <h1 className="text-3xl md:text-5xl font-display text-foreground tracking-wide" style={{ fontWeight: 300 }}>Our Properties</h1>
+          <p className="text-sm text-muted-foreground font-body mt-3 max-w-md mx-auto leading-relaxed" style={{ fontWeight: 400 }}>
             A curated collection of distinguished properties.
           </p>
         </motion.div>
@@ -199,18 +203,19 @@ const Index = () => {
                       <Star key={i} className="w-2.5 h-2.5 text-primary fill-primary" />
                     ))}
                   </div>
-                  <span className="text-[9px] tracking-[0.25em] uppercase text-primary/50 font-body font-light">{hotel.tagline}</span>
-                  <h2 className="text-xl md:text-3xl font-display text-foreground font-light tracking-wide mt-1">{hotel.name}</h2>
+                  <span className="text-[9px] tracking-[0.25em] uppercase text-primary/50 font-body" style={{ fontWeight: 400 }}>{hotel.tagline}</span>
+                  <h2 className="text-xl md:text-3xl font-display text-foreground tracking-wide mt-1" style={{ fontWeight: 300 }}>{hotel.name}</h2>
                   <div className="gold-divider-left mt-3 mb-4" />
-                  <p className="text-sm text-muted-foreground font-body leading-relaxed line-clamp-3 font-light">
+                  <p className="text-sm text-muted-foreground font-body leading-relaxed line-clamp-3" style={{ fontWeight: 400 }}>
                     {hotel.description}
                   </p>
-                  <p className="text-[10px] text-muted-foreground/50 font-body mt-2 flex items-start gap-1 font-light">
+                  <p className="text-[10px] text-muted-foreground/50 font-body mt-2 flex items-start gap-1" style={{ fontWeight: 400 }}>
                     <MapPin className="w-3 h-3 mt-0.5 shrink-0 text-primary/40" />
                     <span className="line-clamp-1">{hotel.address}</span>
                   </p>
                   <motion.span
-                    className="mt-5 inline-flex items-center gap-2 text-[9px] tracking-[0.25em] uppercase text-primary font-body font-light group-hover:gap-3 transition-all duration-300 self-start"
+                    className="mt-5 inline-flex items-center gap-2 text-[9px] tracking-[0.25em] uppercase text-primary font-body group-hover:gap-3 transition-all duration-300 self-start"
+                    style={{ fontWeight: 500 }}
                     whileHover={{ x: 3 }}
                   >
                     Explore <ArrowRight className="w-3 h-3" />
@@ -227,14 +232,14 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-5 md:px-10 py-10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex flex-col items-center md:items-start gap-1">
-              <span className="text-base tracking-[0.25em] uppercase font-display font-light text-foreground">EVARA Co.</span>
-              <span className="text-[9px] tracking-[0.15em] uppercase text-primary/60 font-body font-light">Luxury Hospitality</span>
+              <span className="text-base tracking-[0.25em] uppercase font-display text-foreground" style={{ fontWeight: 300 }}>EVARA Co.</span>
+              <span className="text-[9px] tracking-[0.15em] uppercase text-primary/60 font-body" style={{ fontWeight: 400 }}>Luxury Hospitality</span>
             </div>
             <div className="flex gap-4">
               {[
                 { href: "https://instagram.com", icon: Instagram, external: true },
-                { href: "mailto:info@evaraco.com", icon: Mail },
-                { href: "tel:+919876543210", icon: Phone },
+                { href: "mailto:info@hotelevara.in", icon: Mail },
+                { href: "tel:+919031027961", icon: Phone },
               ].map((link, i) => (
                 <a
                   key={i}
@@ -248,10 +253,10 @@ const Index = () => {
             </div>
           </div>
           <div className="mt-6 pt-5 border-t border-border flex flex-col md:flex-row justify-between items-center gap-2">
-            <p className="text-[9px] text-muted-foreground/40 font-body font-light">© 2025 EVARA Co. All rights reserved.</p>
+            <p className="text-[9px] text-muted-foreground/40 font-body" style={{ fontWeight: 400 }}>© 2025 EVARA Co. All rights reserved.</p>
             <div className="flex gap-5">
-              <span className="text-[9px] text-muted-foreground/40 font-body font-light">Privacy Policy</span>
-              <span className="text-[9px] text-muted-foreground/40 font-body font-light">Terms of Service</span>
+              <span className="text-[9px] text-muted-foreground/40 font-body" style={{ fontWeight: 400 }}>Privacy Policy</span>
+              <span className="text-[9px] text-muted-foreground/40 font-body" style={{ fontWeight: 400 }}>Terms of Service</span>
             </div>
           </div>
         </div>
