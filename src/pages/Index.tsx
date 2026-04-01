@@ -24,55 +24,81 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground font-body overflow-x-hidden">
       <ElevatorTransition isActive={isTransitioning} onComplete={handleTransitionComplete} onDoorsFullyClosed={handleDoorsFullyClosed} />
 
-      {/* Intro Loader — luxury golden reveal */}
+      {/* Intro Loader — white luxury reveal */}
       <AnimatePresence mode="wait">
         {!introComplete && (
           <motion.div
             className="fixed inset-0 z-[9998] flex items-center justify-center"
-            style={{ background: "hsl(var(--foreground))" }}
+            style={{ background: "#ffffff" }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <motion.div className="flex flex-col items-center gap-3 z-10">
-              {/* Gold line top */}
+            {/* Subtle radial glow behind logo */}
+            <motion.div
+              className="absolute"
+              style={{
+                width: "300px",
+                height: "300px",
+                borderRadius: "50%",
+                background: "radial-gradient(circle, rgba(180,160,130,0.08) 0%, transparent 70%)",
+              }}
+              animate={{ scale: [0.8, 1.3, 1.3], opacity: [0, 1, 0] }}
+              transition={{ duration: 2.5, times: [0, 0.4, 1], ease: "easeInOut" }}
+            />
+
+            <motion.div className="flex flex-col items-center gap-4 z-10">
+              {/* Top ornamental line */}
               <motion.div
                 className="h-px"
-                style={{ background: "linear-gradient(90deg, transparent, hsl(var(--gold)), transparent)" }}
+                style={{ background: "linear-gradient(90deg, transparent, #c4b496, transparent)" }}
                 initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 48, opacity: [0, 1, 1, 0] }}
-                transition={{ duration: 1.6, times: [0, 0.15, 0.7, 1], ease: "easeInOut" }}
+                animate={{ width: [0, 60, 60, 0], opacity: [0, 1, 1, 0] }}
+                transition={{ duration: 2.5, times: [0, 0.2, 0.7, 1], ease: "easeInOut" }}
               />
 
-              {/* Main brand */}
+              {/* Brand name */}
               <motion.span
-                className="font-display text-gold"
-                style={{ fontSize: "clamp(1.8rem, 5vw, 3.4rem)", letterSpacing: "0.4em", fontWeight: 300 }}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: [0, 1, 1, 0], y: [8, 0, 0, -6] }}
-                transition={{ duration: 1.6, times: [0, 0.15, 0.7, 1], ease: "easeInOut" }}
+                style={{
+                  fontFamily: "'Cormorant Garamond', Georgia, serif",
+                  fontSize: "clamp(2rem, 6vw, 3.6rem)",
+                  letterSpacing: "0.45em",
+                  fontWeight: 300,
+                  color: "#2a2520",
+                }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: [0, 1, 1, 0], y: [12, 0, 0, -8] }}
+                transition={{ duration: 2.5, times: [0, 0.15, 0.7, 1], ease: "easeInOut" }}
               >
                 EVARA
               </motion.span>
 
-              {/* Subtitle */}
+              {/* Tagline */}
               <motion.span
-                className="text-[9px] tracking-[0.6em] uppercase font-body"
-                style={{ color: "hsl(var(--gold-light))" }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.5, 0.5, 0] }}
-                transition={{ duration: 1.6, times: [0, 0.2, 0.65, 1], ease: "easeInOut" }}
+                className="tracking-[0.5em] uppercase"
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "9px",
+                  color: "#b4a58c",
+                  fontWeight: 400,
+                }}
+                initial={{ opacity: 0, letterSpacing: "0.3em" }}
+                animate={{
+                  opacity: [0, 0.7, 0.7, 0],
+                  letterSpacing: ["0.3em", "0.5em", "0.5em", "0.6em"],
+                }}
+                transition={{ duration: 2.5, times: [0, 0.2, 0.65, 1], ease: "easeInOut" }}
                 onAnimationComplete={() => setIntroComplete(true)}
               >
                 Luxury Hospitality
               </motion.span>
 
-              {/* Gold line bottom */}
+              {/* Bottom ornamental line */}
               <motion.div
                 className="h-px"
-                style={{ background: "linear-gradient(90deg, transparent, hsl(var(--gold)), transparent)" }}
+                style={{ background: "linear-gradient(90deg, transparent, #c4b496, transparent)" }}
                 initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 48, opacity: [0, 1, 1, 0] }}
-                transition={{ duration: 1.6, times: [0, 0.15, 0.7, 1], ease: "easeInOut" }}
+                animate={{ width: [0, 60, 60, 0], opacity: [0, 1, 1, 0] }}
+                transition={{ duration: 2.5, times: [0, 0.2, 0.7, 1], ease: "easeInOut" }}
               />
             </motion.div>
           </motion.div>
