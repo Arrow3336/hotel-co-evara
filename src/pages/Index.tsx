@@ -40,7 +40,7 @@ const Index = () => {
                 width: "300px",
                 height: "300px",
                 borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(180,160,130,0.08) 0%, transparent 70%)",
+                background: "radial-gradient(circle, rgba(140,120,80,0.18) 0%, transparent 70%)",
               }}
               animate={{ scale: [0.8, 1.3, 1.3], opacity: [0, 1, 0] }}
               transition={{ duration: 2.5, times: [0, 0.4, 1], ease: "easeInOut" }}
@@ -50,9 +50,9 @@ const Index = () => {
               {/* Top ornamental line */}
               <motion.div
                 className="h-px"
-                style={{ background: "linear-gradient(90deg, transparent, #c4b496, transparent)" }}
+                style={{ background: "linear-gradient(90deg, transparent, #8a7554, transparent)" }}
                 initial={{ width: 0, opacity: 0 }}
-                animate={{ width: [0, 60, 60, 0], opacity: [0, 1, 1, 0] }}
+                animate={{ width: [0, 80, 80, 0], opacity: [0, 1, 1, 0] }}
                 transition={{ duration: 2.5, times: [0, 0.2, 0.7, 1], ease: "easeInOut" }}
               />
 
@@ -62,8 +62,8 @@ const Index = () => {
                   fontFamily: "'Cormorant Garamond', Georgia, serif",
                   fontSize: "clamp(2rem, 6vw, 3.6rem)",
                   letterSpacing: "0.45em",
-                  fontWeight: 300,
-                  color: "#2a2520",
+                  fontWeight: 400,
+                  color: "#1a1612",
                 }}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: [0, 1, 1, 0], y: [12, 0, 0, -8] }}
