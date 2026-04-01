@@ -9,6 +9,10 @@ import hotelRestaurant from "@/assets/hotel-restaurant.jpg";
 import hotelBanquet from "@/assets/hotel-banquet.jpg";
 import hotelRooftop from "@/assets/hotel-rooftop.jpg";
 import roomDeluxePremium from "@/assets/room-deluxe-premium.jpg";
+import twinDeluxeRoom from "@/assets/twin-deluxe-room.jpeg";
+import suiteRoom from "@/assets/suite-room.jpeg";
+import deluxeRoom from "@/assets/deluxe-room.jpeg";
+import mandapBanquet from "@/assets/mandap-banquet.jpeg";
 
 export interface HotelRoom {
   name: string;
@@ -57,26 +61,26 @@ export const hotels: HotelData[] = [
         name: "Twin Deluxe Room",
         description: "Elegant twin deluxe room designed for comfort and style. Available in 5 rooms.",
         price: "₹2,999",
-        image: roomDeluxePremium,
+        image: twinDeluxeRoom,
         features: ["Twin Beds", "AC", "Free Wi-Fi", "Single: ₹2999 / Double: ₹3799"],
       },
       {
         name: "Deluxe Room",
         description: "Our most popular room category with 13 rooms, offering premium comfort and amenities.",
         price: "₹2,999",
-        image: roomDeluxe,
+        image: deluxeRoom,
         features: ["King Bed", "AC", "Free Wi-Fi", "Single: ₹2999 / Double: ₹3799"],
       },
       {
         name: "Suite Room",
         description: "Luxurious suite rooms for an elevated stay experience. Available in 4 exclusive rooms.",
         price: "₹3,999",
-        image: roomSuite,
+        image: suiteRoom,
         features: ["Premium Suite", "AC", "Free Wi-Fi", "Single: ₹3999 / Double: ₹4499"],
       },
     ],
     amenities: ["CHAUKAA Restaurant", "Open Rooftop Dining", "Mandap Banquet Hall", "Conference Hall", "Free Wi-Fi", "Free Parking", "UPI & Card Payment", "Room Service"],
-    gallery: [hotelEvara, roomDeluxePremium, hotelSpa, hotelDining, hotelRestaurant, hotelBanquet],
+    gallery: [hotelEvara, twinDeluxeRoom, suiteRoom, deluxeRoom, mandapBanquet, hotelRestaurant],
     highlights: [
       {
         title: "CHAUKAA Restaurant",
@@ -86,7 +90,7 @@ export const hotels: HotelData[] = [
       {
         title: "Mandap Banquet Hall",
         description: "Host your dream events — weddings, engagements, birthday parties, and corporate events in our spacious and elegantly designed banquet hall.",
-        image: hotelBanquet,
+        image: mandapBanquet,
       },
       {
         title: "Open Rooftop Dining",
@@ -96,7 +100,7 @@ export const hotels: HotelData[] = [
       {
         title: "Comfortable Rooms & Suites",
         description: "Choose from Twin Deluxe, Deluxe, and Suite rooms — each designed for a restful stay with modern amenities. Check-in at 12:00 Noon, Check-out at 11:00 AM.",
-        image: roomDeluxePremium,
+        image: suiteRoom,
       },
     ],
   },
