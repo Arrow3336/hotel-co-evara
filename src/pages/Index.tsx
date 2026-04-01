@@ -95,7 +95,7 @@ const Index = () => {
               {/* Bottom ornamental line */}
               <motion.div
                 className="h-px"
-                style={{ background: "linear-gradient(90deg, transparent, #c4b496, transparent)" }}
+                style={{ background: "linear-gradient(90deg, transparent, #8a7554, transparent)" }}
                 initial={{ width: 0, opacity: 0 }}
                 animate={{ width: [0, 60, 60, 0], opacity: [0, 1, 1, 0] }}
                 transition={{ duration: 2.5, times: [0, 0.2, 0.7, 1], ease: "easeInOut" }}
