@@ -78,7 +78,7 @@ const Index = () => {
                 style={{
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: "9px",
-                  color: "#b4a58c",
+                  color: "#6b5d4a",
                   fontWeight: 400,
                 }}
                 initial={{ opacity: 0, letterSpacing: "0.3em" }}
