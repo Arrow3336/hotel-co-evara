@@ -1,7 +1,8 @@
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { hotels } from "@/data/hotels";
-import { ArrowLeft, Phone, Mail, Clock, Users, MapPin, Star } from "lucide-react";
+import { ArrowLeft, Phone, Mail, Clock, Users, Star } from "lucide-react";
 
 const highlightDetails: Record<string, {
   hours?: string;
@@ -45,6 +46,11 @@ const HighlightPage = () => {
   const navigateTo = useNavigate();
   const hotel = hotels.find((h) => h.id === id);
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [highlightSlug]);
+
   if (!hotel) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -77,30 +83,30 @@ const HighlightPage = () => {
     <div className="min-h-screen bg-background text-foreground font-body">
       {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 glass-nav">
-        <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 flex items-center justify-between h-12 md:h-14">
           <button onClick={() => navigateTo(`/hotel/${id}`)} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
             <ArrowLeft className="w-4 h-4" />
-            <span className="text-[10px] tracking-wider uppercase font-body hidden sm:inline" style={{ fontWeight: 400 }}>Back</span>
+            <span className="text-[9px] tracking-wider uppercase font-body hidden sm:inline" style={{ fontWeight: 300 }}>Back</span>
           </button>
           <div className="absolute left-1/2 -translate-x-1/2">
-            <span className="text-sm tracking-[0.15em] uppercase font-display" style={{ fontWeight: 300 }}>{hotel.name}</span>
+            <span className="text-xs tracking-[0.15em] uppercase font-display" style={{ fontWeight: 300 }}>{hotel.name}</span>
           </div>
           <div className="w-10" />
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="relative h-[50vh] md:h-[65vh] overflow-hidden">
+      <section className="relative h-[45vh] sm:h-[50vh] md:h-[65vh] overflow-hidden">
         <img src={highlight.image} alt={highlight.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/20 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-14">
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-foreground/15 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 md:p-14">
           <div className="flex gap-1 mb-2">
             {Array.from({ length: hotel.rating }).map((_, i) => (
               <Star key={i} className="w-2.5 h-2.5 text-primary fill-primary" />
             ))}
           </div>
-          <span className="text-[9px] tracking-[0.3em] uppercase text-primary-foreground/50 font-body" style={{ fontWeight: 400 }}>{hotel.name}</span>
-          <h1 className="text-2xl md:text-4xl font-display text-primary-foreground mt-1 tracking-wide" style={{ fontWeight: 300 }}>
+          <span className="text-[9px] tracking-[0.3em] uppercase text-primary-foreground/40 font-body" style={{ fontWeight: 300 }}>{hotel.name}</span>
+          <h1 className="text-xl sm:text-2xl md:text-4xl font-display text-primary-foreground mt-1 tracking-wide" style={{ fontWeight: 300 }}>
             {highlight.title}
           </h1>
         </div>
@@ -109,17 +115,17 @@ const HighlightPage = () => {
       {/* Quick Info Bar */}
       {details && (
         <section className="bg-secondary border-b border-border">
-          <div className="max-w-4xl mx-auto px-5 md:px-10 py-4 flex flex-wrap gap-6 justify-center text-center">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-10 py-4 flex flex-wrap gap-4 md:gap-6 justify-center text-center">
             {details.hours && (
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Clock className="w-3.5 h-3.5 text-primary/60" />
-                <span className="text-[10px] font-body" style={{ fontWeight: 400 }}>{details.hours}</span>
+                <Clock className="w-3.5 h-3.5 text-primary/50" />
+                <span className="text-[9px] sm:text-[10px] font-body" style={{ fontWeight: 300 }}>{details.hours}</span>
               </div>
             )}
             {details.capacity && (
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Users className="w-3.5 h-3.5 text-primary/60" />
-                <span className="text-[10px] font-body" style={{ fontWeight: 400 }}>{details.capacity}</span>
+                <Users className="w-3.5 h-3.5 text-primary/50" />
+                <span className="text-[9px] sm:text-[10px] font-body" style={{ fontWeight: 300 }}>{details.capacity}</span>
               </div>
             )}
           </div>
@@ -137,14 +143,13 @@ const HighlightPage = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: i * 0.1 }}
           >
-            <span className="text-[9px] tracking-[0.3em] uppercase text-primary/50 font-body" style={{ fontWeight: 400 }}>0{i + 1}</span>
-            <h2 className="text-xl md:text-2xl font-display text-foreground tracking-wide mt-1" style={{ fontWeight: 300 }}>{section.title}</h2>
+            <span className="text-[9px] tracking-[0.3em] uppercase text-primary/40 font-body" style={{ fontWeight: 300 }}>0{i + 1}</span>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-display text-foreground tracking-wide mt-1" style={{ fontWeight: 300 }}>{section.title}</h2>
             <div className="gold-divider-left mt-2 mb-4" />
-            <p className="text-sm text-muted-foreground font-body leading-relaxed" style={{ fontWeight: 400 }}>{section.content}</p>
+            <p className="text-sm text-muted-foreground font-body leading-relaxed" style={{ fontWeight: 300 }}>{section.content}</p>
           </motion.div>
         ))}
 
-        {/* Features grid */}
         {details?.features && details.features.length > 0 && (
           <motion.div
             className="mt-8"
@@ -156,46 +161,45 @@ const HighlightPage = () => {
             <h3 className="text-lg font-display text-foreground tracking-wide mb-4" style={{ fontWeight: 300 }}>Features & Amenities</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {details.features.map((feature, i) => (
-                <div key={i} className="flex items-start gap-2.5 p-3 rounded-xl bg-secondary/60 border border-border/30">
-                  <div className="w-1 h-1 rounded-full bg-primary mt-1.5 shrink-0" />
-                  <span className="text-sm text-muted-foreground font-body" style={{ fontWeight: 400 }}>{feature}</span>
+                <div key={i} className="flex items-start gap-2.5 p-3 rounded-lg bg-secondary/50 border border-border/20">
+                  <div className="w-1 h-1 rounded-full bg-primary/40 mt-1.5 shrink-0" />
+                  <span className="text-sm text-muted-foreground font-body" style={{ fontWeight: 300 }}>{feature}</span>
                 </div>
               ))}
             </div>
           </motion.div>
         )}
 
-        {/* If no detailed content, show basic description */}
         {!details && (
           <div className="mb-10">
-            <p className="text-sm text-muted-foreground font-body leading-relaxed" style={{ fontWeight: 400 }}>{highlight.description}</p>
+            <p className="text-sm text-muted-foreground font-body leading-relaxed" style={{ fontWeight: 300 }}>{highlight.description}</p>
           </div>
         )}
       </section>
 
       {/* CTA */}
-      <section className="section-padding bg-foreground text-center">
-        <span className="text-[9px] tracking-[0.3em] uppercase text-primary/70 font-body" style={{ fontWeight: 400 }}>Interested?</span>
-        <h2 className="text-xl md:text-2xl font-display mt-2 text-background tracking-wide" style={{ fontWeight: 300 }}>Make a Reservation</h2>
+      <section className="section-padding text-center" style={{ background: "hsl(var(--foreground))" }}>
+        <span className="text-[9px] tracking-[0.3em] uppercase text-primary/60 font-body" style={{ fontWeight: 300 }}>Interested?</span>
+        <h2 className="text-lg sm:text-xl md:text-2xl font-display mt-2 text-background tracking-wide" style={{ fontWeight: 300 }}>Make a Reservation</h2>
         <div className="gold-divider mt-3 mb-5" />
-        <p className="text-background/40 font-body max-w-sm mx-auto text-sm" style={{ fontWeight: 400 }}>
+        <p className="text-background/30 font-body max-w-sm mx-auto text-sm" style={{ fontWeight: 300 }}>
           Contact us to book or learn more about {highlight.title}.
         </p>
-        <div className="flex items-center justify-center gap-4 mt-6">
-          <a href="tel:+919031027961" className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground text-[9px] tracking-[0.2em] uppercase font-body rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all duration-300" style={{ fontWeight: 500 }}>
+        <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
+          <a href="tel:+919031027961" className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground text-[9px] tracking-[0.25em] uppercase font-body rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all duration-300" style={{ fontWeight: 400 }}>
             <Phone className="w-3 h-3" /> Call Now
           </a>
-          <a href="mailto:info@hotelevara.in" className="inline-flex items-center gap-2 px-6 py-2.5 border border-background/20 text-background text-[9px] tracking-[0.2em] uppercase font-body rounded-full hover:bg-background/10 transition-all duration-300" style={{ fontWeight: 500 }}>
+          <a href="mailto:info@hotelevara.in" className="inline-flex items-center gap-2 px-6 py-2.5 border border-background/15 text-background text-[9px] tracking-[0.25em] uppercase font-body rounded-full hover:bg-background/10 transition-all duration-300" style={{ fontWeight: 400 }}>
             <Mail className="w-3 h-3" /> Email
           </a>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-foreground border-t border-background/10">
-        <div className="max-w-6xl mx-auto px-5 md:px-10 py-8 text-center">
+      <footer style={{ background: "hsl(var(--foreground))" }} className="border-t border-background/10">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 md:px-10 py-8 text-center">
           <span className="text-base tracking-[0.25em] uppercase font-display text-background" style={{ fontWeight: 300 }}>EVARA Co.</span>
-          <p className="text-[9px] text-background/25 font-body mt-3" style={{ fontWeight: 400 }}>© 2025 EVARA Co. All rights reserved.</p>
+          <p className="text-[9px] text-background/20 font-body mt-3" style={{ fontWeight: 300 }}>© 2025 EVARA Co. All rights reserved.</p>
         </div>
       </footer>
     </div>
